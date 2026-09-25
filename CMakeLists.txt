@@ -54,7 +54,11 @@ if(AUTO_ANIMATION_BUILD_IMPORTERS)
         ${CMAKE_CURRENT_SOURCE_DIR}/importer/core/include
         ${CMAKE_CURRENT_SOURCE_DIR}/importer/assimp/include
     )
-    target_link_libraries(auto_animation_importer PUBLIC auto_animation_core assimp)
+    if(TARGET assimp::assimp)
+        target_link_libraries(auto_animation_importer PUBLIC auto_animation_core assimp::assimp)
+    else()
+        target_link_libraries(auto_animation_importer PUBLIC auto_animation_core assimp)
+    endif()
     target_compile_features(auto_animation_importer PUBLIC cxx_std_20)
 
     if(MSVC)

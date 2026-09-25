@@ -16,6 +16,19 @@ add_library(auto_animation_core
     core/src/Version.cpp
     core/src/Logger.cpp
 )
+add_library(auto_animation_animation
+    animation/src/Animation.cpp
+)
+target_include_directories(auto_animation_animation PUBLIC
+    ${CMAKE_CURRENT_SOURCE_DIR}/animation/include
+)
+target_link_libraries(auto_animation_animation PUBLIC auto_animation_core)
+target_compile_features(auto_animation_animation PUBLIC cxx_std_20)
+if(MSVC)
+    target_compile_options(auto_animation_animation PRIVATE /W4 /permissive-)
+else()
+    target_compile_options(auto_animation_animation PRIVATE -Wall -Wextra -Wpedantic)
+endif()
 target_include_directories(auto_animation_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/core/include)
 target_compile_features(auto_animation_core PUBLIC cxx_std_20)
 set_target_properties(auto_animation_core PROPERTIES POSITION_INDEPENDENT_CODE ON)
@@ -56,9 +69,9 @@ if(AUTO_ANIMATION_BUILD_IMPORTERS)
         ${CMAKE_CURRENT_SOURCE_DIR}/importer/assimp/include
     )
     if(TARGET assimp::assimp)
-        target_link_libraries(auto_animation_importer PUBLIC auto_animation_core assimp::assimp)
+        target_link_libraries(auto_animation_importer PUBLIC auto_animation_core auto_animation_animation assimp::assimp)
     else()
-        target_link_libraries(auto_animation_importer PUBLIC auto_animation_core assimp)
+        target_link_libraries(auto_animation_importer PUBLIC auto_animation_core auto_animation_animation assimp)
     endif()
     target_compile_features(auto_animation_importer PUBLIC cxx_std_20)
 
@@ -119,6 +132,10 @@ if(AUTO_ANIMATION_BUILD_TESTS)
     add_executable(auto-animation-tests tests/unit/test_foundation.cpp)
     target_link_libraries(auto-animation-tests PRIVATE auto_animation_core)
     add_test(NAME foundation COMMAND auto-animation-tests)
+
+    add_executable(auto-animation-animation-tests tests/unit/test_animation.cpp)
+    target_link_libraries(auto-animation-animation-tests PRIVATE auto_animation_animation)
+    add_test(NAME animation COMMAND auto-animation-animation-tests)
 
     if(AUTO_ANIMATION_BUILD_VIEWER)
         add_executable(auto-animation-viewer-tests tests/unit/test_viewer.cpp)

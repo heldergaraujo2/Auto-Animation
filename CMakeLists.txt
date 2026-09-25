@@ -18,6 +18,7 @@ add_library(auto_animation_core
 )
 target_include_directories(auto_animation_core PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/core/include)
 target_compile_features(auto_animation_core PUBLIC cxx_std_20)
+set_target_properties(auto_animation_core PROPERTIES POSITION_INDEPENDENT_CODE ON)
 
 if(MSVC)
     target_compile_options(auto_animation_core PRIVATE /W4 /permissive-)

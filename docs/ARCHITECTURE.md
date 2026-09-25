@@ -57,3 +57,32 @@ BMD remains a future proprietary adapter and is deliberately not routed through 
 The importer test suite contains real fixtures for FBX, GLTF, OBJ, SMD, STL and PLY, plus extension/negative-path checks. DAE and 3DS are registered and covered by format/registry checks; dedicated fixtures can be added as format-specific regressions appear.
 
 The viewer remains format-agnostic. Phase 2 produces the representation that Phase 1 will consume when asset rendering is connected.
+
+
+## Universal animation core — Phase 3
+
+Animation data is independent from importers and renderers.
+
+```text
+AnimationClip
+  -> AnimationTrack
+      -> Translation Curve
+      -> Rotation Curve
+      -> Scale Curve
+  -> Pose / Sample
+  -> Validation
+```
+
+Each transform channel owns its own key times. This prevents position, rotation and scale keys from being incorrectly paired by array index when source formats provide different key counts or timings.
+
+The animation core provides:
+- Vec3 and quaternion transforms;
+- translation, rotation and scale curves;
+- step, linear and spherical interpolation;
+- bind-pose sampling;
+- looping and clamped playback;
+- root-motion and sample-rate metadata;
+- deterministic clip validation;
+- no dependency on FBX, Assimp, SDL, OpenGL or UI.
+
+Importers only translate external animation data into this representation. The same animation model can therefore be produced later by procedural motion, manual editing, retargeting or optional AI backends.

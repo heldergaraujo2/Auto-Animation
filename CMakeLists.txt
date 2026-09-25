@@ -8,7 +8,9 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 option(AUTO_ANIMATION_BUILD_TESTS "Build automated tests" ON)
 option(AUTO_ANIMATION_BUILD_VIEWER "Build the 3D viewer application" ON)
+option(AUTO_ANIMATION_BUILD_IMPORTERS "Build asset importers" ON)
 option(AUTO_ANIMATION_FETCH_SDL2 "Fetch SDL2 when a system package is unavailable" ON)
+option(AUTO_ANIMATION_FETCH_ASSIMP "Fetch Assimp when a system package is unavailable" ON)
 
 add_library(auto_animation_core
     core/src/Version.cpp
@@ -21,6 +23,45 @@ if(MSVC)
     target_compile_options(auto_animation_core PRIVATE /W4 /permissive-)
 else()
     target_compile_options(auto_animation_core PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+
+if(AUTO_ANIMATION_BUILD_IMPORTERS)
+    if(AUTO_ANIMATION_FETCH_ASSIMP)
+        include(FetchContent)
+        set(ASSIMP_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+        set(ASSIMP_BUILD_ASSIMP_TOOLS OFF CACHE BOOL "" FORCE)
+        set(ASSIMP_BUILD_SAMPLES OFF CACHE BOOL "" FORCE)
+        set(ASSIMP_INSTALL OFF CACHE BOOL "" FORCE)
+        set(ASSIMP_NO_EXPORT ON CACHE BOOL "" FORCE)
+        FetchContent_Declare(
+            assimp
+            GIT_REPOSITORY https://github.com/assimp/assimp.git
+            GIT_TAG v5.4.3
+            GIT_SHALLOW TRUE
+        )
+        FetchContent_MakeAvailable(assimp)
+    else()
+        find_package(assimp CONFIG REQUIRED)
+    endif()
+
+    add_library(auto_animation_importer
+        importer/core/src/FormatDetector.cpp
+        importer/core/src/ImporterRegistry.cpp
+        importer/core/src/DefaultRegistry.cpp
+        importer/assimp/src/AssimpImporter.cpp
+    )
+    target_include_directories(auto_animation_importer PUBLIC
+        ${CMAKE_CURRENT_SOURCE_DIR}/importer/core/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/importer/assimp/include
+    )
+    target_link_libraries(auto_animation_importer PUBLIC auto_animation_core assimp)
+    target_compile_features(auto_animation_importer PUBLIC cxx_std_20)
+
+    if(MSVC)
+        target_compile_options(auto_animation_importer PRIVATE /W4 /permissive-)
+    else()
+        target_compile_options(auto_animation_importer PRIVATE -Wall -Wextra -Wpedantic)
+    endif()
 endif()
 
 if(AUTO_ANIMATION_BUILD_VIEWER)
@@ -60,6 +101,9 @@ if(AUTO_ANIMATION_BUILD_VIEWER)
 
     add_executable(auto-animation app/src/main.cpp)
     target_link_libraries(auto-animation PRIVATE auto_animation_viewer)
+    if(AUTO_ANIMATION_BUILD_IMPORTERS)
+        target_link_libraries(auto-animation PRIVATE auto_animation_importer)
+    endif()
 else()
     add_executable(auto-animation app/src/main.cpp)
     target_link_libraries(auto-animation PRIVATE auto_animation_core)
@@ -75,5 +119,11 @@ if(AUTO_ANIMATION_BUILD_TESTS)
         add_executable(auto-animation-viewer-tests tests/unit/test_viewer.cpp)
         target_link_libraries(auto-animation-viewer-tests PRIVATE auto_animation_viewer)
         add_test(NAME viewer COMMAND auto-animation-viewer-tests)
+    endif()
+
+    if(AUTO_ANIMATION_BUILD_IMPORTERS)
+        add_executable(auto-animation-importer-tests tests/unit/test_importer.cpp)
+        target_link_libraries(auto-animation-importer-tests PRIVATE auto_animation_importer)
+        add_test(NAME importer COMMAND auto-animation-importer-tests ${CMAKE_CURRENT_SOURCE_DIR}/tests/fixtures)
     endif()
 endif()

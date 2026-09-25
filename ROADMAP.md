@@ -190,7 +190,7 @@ A necessidade de múltiplos formatos foi incorporada à arquitetura antes da imp
 
 # FASE 2 — IMPORTAÇÃO UNIVERSAL DE ASSETS
 
-**Status: NÃO INICIADA**
+**Status: CONCLUÍDA**
 
 ## Objetivo
 
@@ -269,6 +269,23 @@ Formatos sem skeleton/animação devem entrar como assets geométricos válidos,
 ## Critério
 
 Importar pelo menos FBX, GLB/GLTF, OBJ e SMD na primeira implementação útil, preservando geometry/material/skeleton/skin/animation conforme as capacidades do formato, e registrar os demais formatos como adapters planejados/testáveis.
+
+## Resultado da Fase 2
+
+- [x] Modelo universal de Asset/Mesh/Material/Skeleton/Bone/Skin/Animation.
+- [x] Detector de formato por extensão.
+- [x] Registry extensível de importers.
+- [x] Adapter Assimp isolado do restante do projeto.
+- [x] FBX importado com fixture real.
+- [x] GLTF importado com fixture real.
+- [x] OBJ importado com fixture real.
+- [x] SMD importado com fixture real.
+- [x] STL importado com fixture real.
+- [x] PLY importado com fixture real.
+- [x] DAE e 3DS reconhecidos pelo registry/adapter.
+- [x] BMD explicitamente reservado para adapter proprietário futuro.
+- [x] Caminhos de arquivo inexistente e extensão não suportada testados.
+- [x] Integração de build e testes no CI.
 
 ---
 

@@ -1,5 +1,6 @@
 #include "auto_animation/viewer/Viewer.hpp"
 #include "auto_animation/Logger.hpp"
+#include "auto_animation/rigging/Skeleton.hpp"
 
 #include <SDL.h>
 #include <SDL_opengl.h>
@@ -105,6 +106,23 @@ void draw_demo_asset(double time_seconds) {
     glPopMatrix();
 }
 
+void draw_skeleton(const rigging::Skeleton& skeleton) {
+    glDisable(GL_LIGHTING);
+    glLineWidth(3.0f);
+    glColor3f(0.95f, 0.78f, 0.20f);
+    glBegin(GL_LINES);
+    for (std::size_t i = 0; i < skeleton.bones.size(); ++i) {
+        const auto parent = skeleton.bones[i].parent_index;
+        if (parent < 0 || !skeleton.has_bone(parent)) continue;
+        const auto a = skeleton.world_transform(parent);
+        const auto b = skeleton.world_transform(static_cast<std::int32_t>(i));
+        glVertex3f(a.translation.x, a.translation.y, a.translation.z);
+        glVertex3f(b.translation.x, b.translation.y, b.translation.z);
+    }
+    glEnd();
+    glLineWidth(1.0f);
+}
+
 } // namespace
 
 struct Viewer::Impl {
@@ -120,6 +138,7 @@ struct Viewer::Impl {
     int last_mouse_y = 0;
     bool timeline_playing = true;
     double timeline_seconds = 0.0;
+    const rigging::Skeleton* skeleton = nullptr;
 };
 
 Viewer::Viewer(ViewerConfig config)
@@ -186,6 +205,10 @@ bool Viewer::initialize() {
 
 bool Viewer::initialized() const noexcept {
     return impl_ != nullptr && impl_->window != nullptr && impl_->context != nullptr;
+}
+
+void Viewer::set_skeleton(const rigging::Skeleton* skeleton) {
+    if (impl_ != nullptr) impl_->skeleton = skeleton;
 }
 
 void Viewer::request_close() {
@@ -288,6 +311,7 @@ void Viewer::run() {
 
         glColor3f(0.72f, 0.78f, 0.86f);
         draw_demo_asset(impl_->timeline_seconds);
+        if (impl_->skeleton != nullptr) draw_skeleton(*impl_->skeleton);
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         SDL_GL_SwapWindow(impl_->window);

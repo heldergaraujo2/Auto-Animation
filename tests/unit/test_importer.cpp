@@ -54,6 +54,16 @@ int main(int argc, char** argv) {
     expect(static_cast<bool>(smd), "SMD import succeeds");
     expect(!smd.asset.meshes.empty(), "SMD produces geometry");
 
+    const auto rigged = registry.import(root / "rigged.smd");
+    if (!rigged) std::cerr << "RIGGED SMD ERROR: " << rigged.error << "\\n";
+    expect(static_cast<bool>(rigged), "rigged SMD import succeeds");
+    expect(rigged.asset.has_skeleton(), "rigged SMD produces skeleton");
+    if (rigged.asset.has_skeleton()) {
+        expect(rigged.asset.skeletons[0].find_bone("root") >= 0, "imported skeleton contains root");
+        expect(rigged.asset.skeletons[0].find_bone("arm") >= 0, "imported skeleton contains child bone");
+        expect(rigged.asset.skeletons[0].validate().valid(), "imported skeleton validates");
+    }
+
     const auto stl = registry.import(root / "triangle.stl");
     expect(static_cast<bool>(stl), "STL import succeeds");
 

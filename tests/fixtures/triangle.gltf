@@ -11,7 +11,7 @@
   }],
   "buffers": [{
     "uri": "data:application/octet-stream;base64,AAAAAAAAAAAAAAAAAACAPwAAAAAAAAAAAAAAAAAAgD8AAAAAAAEC",
-    "byteLength": 38
+    "byteLength": 39
   }],
   "bufferViews": [
     {"buffer": 0, "byteOffset": 0, "byteLength": 36, "target": 34962},

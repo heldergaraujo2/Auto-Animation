@@ -114,89 +114,150 @@ Projeto compila/executa e abre uma aplicação inicial.
 
 ---
 
-# FASE 1 — VISUALIZADOR 3D
+# FASE 1 — VISUALIZADOR 3D + FRONTEIRA UNIVERSAL DE ASSET
 
 ## Objetivo
 
-Criar o visualizador que acompanhará todo o desenvolvimento.
+Criar o visualizador que acompanhará todo o desenvolvimento e estabelecer a fronteira entre a representação interna do projeto e qualquer formato de arquivo externo.
 
-## Recursos
+A Fase 1 não deve conhecer FBX, OBJ ou outro formato diretamente. O viewer recebe uma representação de cena/asset que poderá ser produzida futuramente por qualquer importer.
 
+## Implementação inicial
+
+- Janela multiplataforma via SDL2.
+- Contexto OpenGL isolado no módulo viewer.
 - Câmera orbit.
-- Pan.
 - Zoom.
 - Grid.
-- Eixos.
-- Iluminação.
-- Wireframe.
-- Solid.
-- Textured.
-- Skeleton overlay.
-- Bone names.
-- Bone axes.
-- Bounding box.
-- FPS.
-- Estatísticas.
+- Eixos XYZ.
+- Profundidade 3D.
+- Renderização sólida.
+- Renderização wireframe.
+- Animação demonstrativa em loop.
+- Play/Pause.
+- Frame stepping a 30 FPS.
+- Estatísticas/FPS no título da janela.
+- Redimensionamento da janela.
+- Fechamento limpo.
+- Entrada de mouse e teclado.
+- Teste automatizado da API do viewer sem exigir janela interativa.
+- Demonstração de personagem suspenso com asas para validar o caso FlyIdle visual.
+
+## Recursos preparados para integração posterior
+
 - Seleção de objetos.
 - Seleção de bones.
+- Skeleton overlay.
+- Bone names/axes.
+- Bounding box.
 - Gizmos.
-- Timeline.
-- Play/Pause.
-- Loop.
+- Timeline visual.
 - Scrubbing.
 - Controle de velocidade.
-- Frame stepping.
 - Comparação de poses.
+
+Esses recursos serão conectados quando a representação universal, skeleton e animação estiverem disponíveis.
+
+## Regra arquitetural
+
+O core não depende de SDL/OpenGL.
+
+O viewer não depende de FBX/OBJ/SMD/GLTF/etc.
+
+A fronteira planejada é:
+
+Arquivo externo
+→ Importer
+→ Universal Asset/Scene
+→ Viewer
+
+Isso permite adicionar novos formatos sem reescrever o viewer.
 
 ## Critério
 
-Abrir asset 3D suportado e visualizá-lo com câmera, seleção e timeline.
+A aplicação abre uma janela 3D, renderiza uma cena demonstrativa animada, permite orbit/zoom, wireframe e play/pause, e possui testes automatizados da camada viewer.
 
 ---
 
-# FASE 2 — IMPORTAÇÃO DE ASSETS
+# FASE 2 — IMPORTAÇÃO UNIVERSAL DE ASSETS
 
 ## Objetivo
 
-Criar camada robusta de importação.
+Criar uma camada extensível capaz de receber muitos formatos 3D e converter todos eles para uma representação interna única.
 
-Prioridade:
-1. FBX.
-2. glTF/GLB.
-3. OBJ para estáticos.
-4. Outros formatos futuramente.
+## Formatos-alvo
 
-## Pipeline
+### Prioridade 1 — skeletal/animated
+- FBX.
+- GLB / GLTF.
+- SMD.
+
+### Prioridade 2 — geometry/static
+- OBJ.
+- DAE / Collada.
+- 3DS.
+- STL.
+- PLY.
+
+### Prioridade 3 — formatos específicos do ecossistema do usuário
+- BMD e arquivos auxiliares relacionados a MU.
+- Outros formatos proprietários através de plugins/adapters.
+
+O termo “SMB” citado como possível formato deverá ser confirmado antes de implementar um parser específico, pois a sigla possui múltiplos significados.
+
+## Arquitetura
+
+importer/
+├── core/
+├── fbx/
+├── gltf/
+├── obj/
+├── smd/
+├── dae/
+├── 3ds/
+├── stl/
+├── ply/
+├── mu/
+└── registry/
+
+Pipeline:
 
 Arquivo
-→ Parser
-→ Scene
-→ Meshes
-→ Materials
-→ Skeleton
-→ Skin
-→ Animations
-→ Representação interna
+→ Format Detector
+→ Importer Registry
+→ Importer específico
+→ Universal Asset/Scene
+→ Viewer / Analysis / Rigging / Animation
 
-## Dados
+O restante do programa não deve depender do formato de origem.
 
-- Vertices.
-- Normais.
-- UV.
-- Materiais.
-- Texturas.
-- Submeshes.
-- Bones.
-- Hierarquia.
-- Bind pose.
-- Skin weights.
-- Animações existentes.
-- Frames.
-- Curvas.
+## Representação universal mínima
+
+Asset
+├── Mesh
+│   ├── Vertices
+│   ├── Normals
+│   ├── UV
+│   ├── Materials
+│   └── Textures
+├── Skeleton
+│   ├── Bones
+│   ├── Hierarchy
+│   └── Bind Pose
+├── Skin
+│   ├── Weights
+│   └── Influences
+└── Animations
+    ├── Tracks
+    ├── Keyframes
+    ├── Curves
+    └── Metadata
+
+Formatos sem skeleton/animação devem entrar como assets geométricos válidos, sem serem artificialmente convertidos em humanoides.
 
 ## Critério
 
-Importar FBX com e sem skeleton corretamente.
+Importar pelo menos FBX, GLB/GLTF, OBJ e SMD na primeira implementação útil, preservando geometry/material/skeleton/skin/animation conforme as capacidades do formato, e registrar os demais formatos como adapters planejados/testáveis.
 
 ---
 
@@ -1037,7 +1098,7 @@ Estados:
 
 # PRIORIDADE
 
-1. Fases 0–4: Fundamentos.
+1. Fases 0–4: Fundamentos e pipeline universal de assets.
 2. Fases 5–10: Rigging.
 3. Fases 11–14: Animação.
 4. Fases 15–16: IA e retarget.

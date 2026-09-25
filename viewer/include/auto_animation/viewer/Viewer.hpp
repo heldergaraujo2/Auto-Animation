@@ -28,6 +28,7 @@ public:
 
     bool initialize();
     void run();
+    void run_for_frames(std::uint64_t frame_count);
     void request_close();
 
     [[nodiscard]] bool initialized() const noexcept;

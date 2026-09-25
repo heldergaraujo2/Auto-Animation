@@ -25,6 +25,18 @@ std::array<float, 16> to_matrix(const aiMatrix4x4& m) {
     return {m.a1,m.a2,m.a3,m.a4,m.b1,m.b2,m.b3,m.b4,m.c1,m.c2,m.c3,m.c4,m.d1,m.d2,m.d3,m.d4};
 }
 
+animation::Transform to_transform(const aiMatrix4x4& m) {
+    aiVector3D scaling;
+    aiVector3D position;
+    aiQuaternion rotation;
+    m.Decompose(scaling, rotation, position);
+    return {
+        {position.x, position.y, position.z},
+        {rotation.x, rotation.y, rotation.z, rotation.w},
+        {scaling.x, scaling.y, scaling.z}
+    };
+}
+
 std::array<float, 4> color(const aiColor4D& c) {
     return {c.r,c.g,c.b,c.a};
 }
@@ -38,6 +50,8 @@ void append_node_bones(
     const std::int32_t current = it == lookup.end() ? parent : it->second;
     if (it != lookup.end()) {
         bones[current].parent_index = parent;
+        bones[current].bind_local = to_transform(node->mTransformation);
+        bones[current].local_pose = bones[current].bind_local;
     }
     for (unsigned int i = 0; i < node->mNumChildren; ++i) {
         append_node_bones(node->mChildren[i], current, lookup, bones);
@@ -108,7 +122,7 @@ ImportResult AssimpImporter::import_file(
                 if (bone_lookup.contains(name)) continue;
                 Bone out;
                 out.name = name;
-                out.bind_transform = to_matrix(bone->mOffsetMatrix);
+                out.inverse_bind_matrix = to_matrix(bone->mOffsetMatrix);
                 bone_lookup.emplace(name, static_cast<std::int32_t>(skeleton.bones.size()));
                 skeleton.bones.push_back(out);
             }

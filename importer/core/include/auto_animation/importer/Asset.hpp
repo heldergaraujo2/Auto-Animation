@@ -2,6 +2,7 @@
 
 #include <array>
 #include "auto_animation/animation/Animation.hpp"
+#include "auto_animation/rigging/Skeleton.hpp"
 
 #include <cstdint>
 #include <string>
@@ -34,16 +35,8 @@ struct Mesh {
     std::uint32_t material_index = 0;
 };
 
-struct Bone {
-    std::string name;
-    std::int32_t parent_index = -1;
-    std::array<float, 16> bind_transform{};
-};
-
-struct Skeleton {
-    std::string name;
-    std::vector<Bone> bones;
-};
+using Bone = rigging::Bone;
+using Skeleton = rigging::Skeleton;
 
 using AnimationClip = animation::AnimationClip;
 using AnimationTrack = animation::AnimationTrack;

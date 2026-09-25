@@ -26,10 +26,10 @@ O novo chat deverá:
 
 # STATUS GERAL
 
-Fase atual: 1 — Visualizador 3D
+Fase atual: 2 — Importação Universal de Assets
 Estado: NÃO INICIADA
-Última fase concluída: 0 — Fundação
-Último marco: fundação técnica compilável e testável criada.
+Última fase concluída: 1 — Visualizador 3D + fronteira universal de asset
+Último marco: viewer 3D funcional, self-test automatizado e arquitetura preparada para múltiplos formatos.
 
 Estado real após a Fase 0:
 - CMake 3.20+ configurado.
@@ -100,54 +100,68 @@ Commit/marcos:
 
 ---
 
-# FASE 1 — VISUALIZADOR 3D
-Status: NÃO INICIADA
+# FASE 1 — VISUALIZADOR 3D + FRONTEIRA UNIVERSAL DE ASSET
+Status: CONCLUÍDA
 
 Objetivo:
-Criar o visualizador que acompanhará todo o desenvolvimento.
+Criar o visualizador que acompanhará todo o desenvolvimento sem acoplar o core a renderer ou formato de arquivo.
 
 Checklist:
-- [ ] Escolher renderer/framework.
-- [ ] Janela.
-- [ ] Renderer.
-- [ ] Câmera orbit.
-- [ ] Pan.
-- [ ] Zoom.
-- [ ] Grid.
-- [ ] Eixos.
-- [ ] Iluminação.
-- [ ] Wireframe.
-- [ ] Solid.
-- [ ] Textured.
-- [ ] Seleção de objetos.
-- [ ] Gizmos.
-- [ ] Estatísticas/FPS.
-- [ ] Base para skeleton overlay.
-- [ ] Timeline.
-- [ ] Play/Pause.
-- [ ] Loop.
-- [ ] Scrubbing.
-- [ ] Controle de velocidade.
-- [ ] Frame stepping.
-- [ ] Testes do viewer.
+- [x] Renderer isolado no módulo viewer.
+- [x] SDL2 para janela/input.
+- [x] Contexto OpenGL.
+- [x] Câmera orbit.
+- [x] Zoom.
+- [x] Grid.
+- [x] Eixos.
+- [x] Renderização sólida.
+- [x] Wireframe.
+- [x] Redimensionamento.
+- [x] Estatísticas/FPS.
+- [x] Play/Pause.
+- [x] Loop da demonstração.
+- [x] Frame stepping a 30 FPS.
+- [x] Self-test determinístico.
+- [x] Demonstração de personagem suspenso com asas.
+- [x] Core sem dependência de SDL/OpenGL.
+- [x] Viewer sem dependência de FBX/OBJ/SMD/etc.
+- [x] CI compila e testa o viewer.
+- [x] CI executa o self-test com X virtual.
 
 O que foi feito:
-—
+- Criado `viewer/include/auto_animation/viewer/Viewer.hpp`.
+- Criado `viewer/src/Viewer.cpp`.
+- Integrado SDL2 via CMake FetchContent quando não houver pacote do sistema.
+- Integrado OpenGL ao target do viewer.
+- Atualizado `app/src/main.cpp` para iniciar o viewer.
+- Criado `--self-test` para inicialização/renderização determinística em CI.
+- Criado `tests/unit/test_viewer.cpp`.
+- Criado `docs/VIEWER.md`.
+- Atualizado CI com dependências OpenGL/X11 e Xvfb.
+- Atualizado ROADMAP para separar viewer da futura camada de importação universal.
 
 Última atividade:
-—
+Correção de link OpenGL, dependências de CI e validação do contexto gráfico via Xvfb.
 
 Problemas:
-—
+Nenhum bloqueador dentro do escopo da Fase 1.
+Observação: a execução interativa física em desktop não é automatizada pelo CI; a inicialização do contexto e três frames foram validados em X virtual.
 
 Próximo passo:
-Definir e integrar o renderer da Fase 1 sem acoplar o core de animação a uma tecnologia gráfica específica.
+Iniciar a Fase 2 — Importação Universal de Assets, começando pela representação universal e registry de importers.
 
 Testes:
-—
+- GitHub Actions run #30: SUCCESS.
+- Configure: PASS.
+- Build: PASS.
+- CTest: PASS.
+- Viewer self-test via Xvfb: PASS.
+- O run #23 falhou por ausência de OpenGL no runner; corrigido no CMake/CI.
+- O run #25 falhou por headers X11 ausentes; corrigido no CI.
+- Run final #30 concluiu todos os passos com sucesso.
 
 Commit:
-—
+3b1fca1b3f7dbb4af61a1b8a7e31db25e46424fe
 
 ---
 
@@ -165,7 +179,7 @@ O roadmap detalhado permanece em ROADMAP.md. Ao concluir cada fase, atualizar aq
 # OBJETIVO FINAL
 
 A ferramenta deverá:
-- Importar FBX/GLB.
+- Importar FBX, GLB/GLTF, OBJ, SMD e ampliar para DAE, 3DS, STL, PLY e formatos proprietários através de adapters/plugins.
 - Visualizar assets em 3D.
 - Analisar malhas.
 - Permitir marcação anatômica.

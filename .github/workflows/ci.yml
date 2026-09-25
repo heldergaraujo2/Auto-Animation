@@ -12,10 +12,12 @@ jobs:
       - name: Install build tools
         run: |
           sudo apt-get update
-          sudo apt-get install -y cmake ninja-build g++ libgl1-mesa-dev libgl-dev libxext-dev libx11-dev
+          sudo apt-get install -y cmake ninja-build g++ libgl1-mesa-dev libgl-dev libxext-dev libx11-dev xvfb
       - name: Configure
         run: cmake -S . -B build -G Ninja -DCMAKE_BUILD_TYPE=Release
       - name: Build
         run: cmake --build build --parallel
       - name: Test
-        run: ctest --test-dir build --output-on-failure
+        run: |
+          ctest --test-dir build --output-on-failure
+          xvfb-run -a ./build/auto-animation --self-test

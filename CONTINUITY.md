@@ -26,10 +26,10 @@ O novo chat deverá:
 
 # STATUS GERAL
 
-Fase atual: 3 — Modelo Interno Universal de Animação
+Fase atual: 4 — Skeleton Inspector e Edição Manual
 Estado: NÃO INICIADA
-Última fase concluída: 2 — Importação Universal de Assets
-Último marco: importer universal funcional com representação interna, registry e adapter Assimp, validado no CI.
+Última fase concluída: 3 — Modelo Interno Universal de Animação
+Último marco: núcleo universal de animação independente do importer, com curvas temporais independentes, sampling, looping e validação, validado no CI.
 
 Estado real após a Fase 0:
 - CMake 3.20+ configurado.
@@ -223,6 +223,49 @@ Commit/marco final:
 
 Próximo passo:
 Fase 3 — Modelo Interno Universal de Animação, consolidando o modelo de animação para independência completa dos importadores.
+
+# FASE 3 — MODELO INTERNO UNIVERSAL DE ANIMAÇÃO
+Status: CONCLUÍDA
+
+Objetivo:
+Criar uma representação de animação independente de formatos externos, renderer e UI.
+
+Implementação:
+- Criado módulo `animation` com target `auto_animation_animation`.
+- Criados Transform, Vec3 e Quat universais.
+- Criadas curvas independentes de translation, rotation e scale.
+- Cada canal preserva seus próprios tempos de keyframe.
+- Adicionadas interpolações Step, Linear e Spherical.
+- Adicionado sampling de curvas e clips.
+- Adicionado Pose/bind-pose como fallback para canais ausentes.
+- Adicionados looping, clamp, sample rate e root motion.
+- Adicionada validação de duração, tempos, ordenação, valores finitos e quaternions.
+- Asset importer agora usa os tipos de animação do módulo universal.
+- Assimp deixou de agrupar canais por índice e preserva os timestamps independentes de cada canal.
+- Teste unitário específico da animação criado.
+
+Problema corrigido:
+A implementação da Fase 2 agrupava translation/rotation/scale em Keyframe único e usava o mesmo índice para os três canais. Isso podia deslocar tempos quando os canais tinham quantidades diferentes de chaves. A nova estrutura elimina essa perda de informação.
+
+Testes finais:
+- Configure CMake: PASS.
+- Build completo: PASS.
+- CTest: PASS.
+- Teste unitário do animation core: PASS.
+- Regressão foundation/viewer/importer: PASS.
+- Viewer self-test com Xvfb: PASS.
+- GitHub Actions run #71: SUCCESS.
+
+Commits relevantes:
+- 4134506b67b2d238e314cf95c43f5a5e20bc0d4f — núcleo universal.
+- f3bce35e8b8ce2cae9cbb2c6f40058a745999207 — testes.
+- df44ac3ba26b5f9f957aedfeb4e59e37fb012a71 — conversão Assimp corrigida.
+- 8557d9fda5968618c8ece713a0b54eb949ab58fe — documentação da fase.
+
+Próximo passo:
+Fase 4 — Skeleton Inspector e Edição Manual.
+
+---
 
 # FASES 3–30
 

@@ -303,4 +303,62 @@ void Viewer::run() {
     }
 }
 
+void Viewer::run_for_frames(std::uint64_t frame_count) {
+    if (!initialized() || frame_count == 0) {
+        return;
+    }
+
+    impl_->running = true;
+    auto previous = std::chrono::steady_clock::now();
+
+    for (std::uint64_t frame = 0; frame < frame_count && impl_->running; ++frame) {
+        const auto now = std::chrono::steady_clock::now();
+        stats_.delta_seconds = std::chrono::duration<double>(now - previous).count();
+        previous = now;
+        stats_.delta_seconds = std::clamp(stats_.delta_seconds, 0.0, 0.25);
+        ++stats_.frames;
+        stats_.fps = stats_.delta_seconds > 0.0 ? 1.0 / stats_.delta_seconds : 0.0;
+
+        SDL_Event event{};
+        while (SDL_PollEvent(&event) != 0) {
+            if (event.type == SDL_QUIT) {
+                impl_->running = false;
+            }
+        }
+
+        impl_->timeline_seconds += stats_.delta_seconds;
+        if (impl_->timeline_seconds >= 4.0) {
+            impl_->timeline_seconds = std::fmod(impl_->timeline_seconds, 4.0);
+        }
+
+        glViewport(0, 0, config_.width, config_.height);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        glMatrixMode(GL_PROJECTION);
+        glLoadIdentity();
+        set_perspective(55.0f,
+                        static_cast<float>(config_.width) / static_cast<float>(std::max(1, config_.height)),
+                        0.1f,
+                        100.0f);
+
+        glMatrixMode(GL_MODELVIEW);
+        glLoadIdentity();
+        glTranslatef(0.0f, -1.5f, -impl_->distance);
+        glRotatef(impl_->pitch, 1.0f, 0.0f, 0.0f);
+        glRotatef(impl_->yaw, 0.0f, 1.0f, 0.0f);
+        glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+        glColor3f(0.17f, 0.20f, 0.24f);
+        draw_grid(10.0f, 1.0f);
+        draw_axes(2.0f);
+
+        glColor3f(0.72f, 0.78f, 0.86f);
+        draw_demo_asset(impl_->timeline_seconds);
+
+        SDL_GL_SwapWindow(impl_->window);
+    }
+
+    impl_->running = false;
+}
+
 } // namespace auto_animation::viewer

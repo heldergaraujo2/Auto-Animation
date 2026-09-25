@@ -40,10 +40,12 @@ int main(int argc, char** argv) {
     expect(obj.asset.meshes[0].indices.size() == 6, "OBJ produces two triangles");
 
     const auto gltf = registry.import(root / "triangle.gltf");
+    if (!gltf) std::cerr << "GLTF ERROR: " << gltf.error << "\\n";
     expect(static_cast<bool>(gltf), "GLTF import succeeds");
     expect(!gltf.asset.meshes.empty(), "GLTF produces geometry");
 
     const auto smd = registry.import(root / "triangle.smd");
+    if (!smd) std::cerr << "SMD ERROR: " << smd.error << "\\n";
     expect(static_cast<bool>(smd), "SMD import succeeds");
     expect(!smd.asset.meshes.empty(), "SMD produces geometry");
 

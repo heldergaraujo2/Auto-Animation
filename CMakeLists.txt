@@ -24,6 +24,7 @@ else()
 endif()
 
 if(AUTO_ANIMATION_BUILD_VIEWER)
+    find_package(OpenGL REQUIRED)
     find_package(SDL2 CONFIG QUIET)
 
     if(NOT TARGET SDL2::SDL2 AND AUTO_ANIMATION_FETCH_SDL2)
@@ -48,7 +49,7 @@ if(AUTO_ANIMATION_BUILD_VIEWER)
         viewer/src/Viewer.cpp
     )
     target_include_directories(auto_animation_viewer PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/viewer/include)
-    target_link_libraries(auto_animation_viewer PUBLIC auto_animation_core SDL2::SDL2)
+    target_link_libraries(auto_animation_viewer PUBLIC auto_animation_core SDL2::SDL2 OpenGL::GL)
     target_compile_features(auto_animation_viewer PUBLIC cxx_std_20)
 
     if(MSVC)

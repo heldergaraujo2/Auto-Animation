@@ -1,6 +1,8 @@
 #pragma once
 
 #include <array>
+#include "auto_animation/animation/Animation.hpp"
+
 #include <cstdint>
 #include <string>
 #include <vector>
@@ -43,24 +45,8 @@ struct Skeleton {
     std::vector<Bone> bones;
 };
 
-struct Keyframe {
-    double time_seconds = 0.0;
-    std::array<float, 3> translation{0.0f, 0.0f, 0.0f};
-    std::array<float, 4> rotation{0.0f, 0.0f, 0.0f, 1.0f};
-    std::array<float, 3> scale{1.0f, 1.0f, 1.0f};
-};
-
-struct AnimationTrack {
-    std::string bone_name;
-    std::vector<Keyframe> keyframes;
-};
-
-struct AnimationClip {
-    std::string name;
-    double duration_seconds = 0.0;
-    double ticks_per_second = 0.0;
-    std::vector<AnimationTrack> tracks;
-};
+using AnimationClip = animation::AnimationClip;
+using AnimationTrack = animation::AnimationTrack;
 
 struct Asset {
     std::string source_path;

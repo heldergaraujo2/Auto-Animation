@@ -26,10 +26,10 @@ O novo chat deverá:
 
 # STATUS GERAL
 
-Fase atual: 2 — Importação Universal de Assets
+Fase atual: 3 — Modelo Interno Universal de Animação
 Estado: NÃO INICIADA
-Última fase concluída: 1 — Visualizador 3D + fronteira universal de asset
-Último marco: viewer 3D funcional, self-test automatizado e arquitetura preparada para múltiplos formatos.
+Última fase concluída: 2 — Importação Universal de Assets
+Último marco: importer universal funcional com representação interna, registry e adapter Assimp, validado no CI.
 
 Estado real após a Fase 0:
 - CMake 3.20+ configurado.
@@ -165,7 +165,66 @@ Commit:
 
 ---
 
-# FASES 2–30
+---
+
+# FASE 2 — IMPORTAÇÃO UNIVERSAL DE ASSETS
+Status: CONCLUÍDA
+
+Objetivo:
+Criar uma fronteira universal para entrada de arquivos 3D, sem acoplar o restante do sistema ao formato de origem.
+
+Checklist:
+- [x] Representação universal de Asset/Mesh/Material/Skeleton/Bone/Skin/Animation.
+- [x] FormatDetector.
+- [x] ImporterRegistry extensível.
+- [x] Adapter Assimp isolado.
+- [x] FBX real.
+- [x] GLTF real.
+- [x] OBJ real.
+- [x] SMD real.
+- [x] STL real.
+- [x] PLY real.
+- [x] DAE/3DS registrados.
+- [x] BMD reservado para importer proprietário.
+- [x] Testes negativos para arquivo ausente e extensão não suportada.
+- [x] Build e testes integrados ao CI.
+
+Implementação:
+- importer/core contém o modelo universal, detector e registry.
+- importer/assimp contém o adapter externo.
+- CMake baixa Assimp automaticamente no CI/build limpo quando solicitado.
+- O app continua separado do domínio e apenas linka o módulo de importação.
+
+Fixtures de regressão:
+- cube.obj
+- triangle.gltf
+- triangle.smd
+- triangle.stl
+- triangle.ply
+- cubes_nonames.fbx (fixture conhecido como válido pelo projeto Assimp)
+
+Testes finais:
+- Configure: PASS.
+- Build: PASS.
+- CTest foundation: PASS.
+- CTest viewer: PASS.
+- CTest importer: PASS.
+- Viewer self-test com Xvfb: PASS.
+- CI final run #60: SUCCESS.
+
+Problemas encontrados e corrigidos:
+1. Core estático não-PIC ao ser linkado em bibliotecas compartilhadas: corrigido com POSITION_INDEPENDENT_CODE.
+2. Fixture GLTF tinha tamanho de buffer incorreto: corrigido para 39 bytes e byteLength correto do index buffer.
+3. Fixture SMD tinha material repetido por vértice: corrigido para sintaxe SMD correta.
+4. Fixture FBX minimalista inicial não era aceita de forma confiável: substituída por fixture FBX conhecida como válida pelo conjunto de testes do Assimp.
+
+Commit/marco final:
+05df7922385addeb101210d895b997ff68f6d18d
+
+Próximo passo:
+Fase 3 — Modelo Interno Universal de Animação, consolidando o modelo de animação para independência completa dos importadores.
+
+# FASES 3–30
 
 O roadmap detalhado permanece em ROADMAP.md. Ao concluir cada fase, atualizar aqui:
 - status;
@@ -179,7 +238,7 @@ O roadmap detalhado permanece em ROADMAP.md. Ao concluir cada fase, atualizar aq
 # OBJETIVO FINAL
 
 A ferramenta deverá:
-- Importar FBX, GLB/GLTF, OBJ, SMD e ampliar para DAE, 3DS, STL, PLY e formatos proprietários através de adapters/plugins.
+- Importar FBX, GLB/GLTF, OBJ, SMD, DAE, 3DS, STL e PLY através da camada universal; BMD e outros formatos proprietários entram por adapters/plugins.
 - Visualizar assets em 3D.
 - Analisar malhas.
 - Permitir marcação anatômica.

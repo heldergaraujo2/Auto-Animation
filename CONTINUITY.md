@@ -24,6 +24,144 @@ O novo chat deverá:
 8. Executar testes.
 9. Atualizar este arquivo após etapas relevantes.
 
+# STATUS GERAL
+
+Fase atual: 1 — Visualizador 3D
+Estado: NÃO INICIADA
+Última fase concluída: 0 — Fundação
+Último marco: fundação técnica compilável e testável criada.
+
+Estado real após a Fase 0:
+- CMake 3.20+ configurado.
+- C++20 definido.
+- Biblioteca core criada.
+- Aplicação inicial criada.
+- Sistema de logging inicial criado.
+- Teste automatizado de fundação criado.
+- CTest configurado.
+- CMake Presets configurado.
+- CI do GitHub Actions configurado.
+- Estrutura de diretórios futura criada.
+- Documentação de arquitetura e desenvolvimento criada.
+- Build/teste local equivalente executado com sucesso.
+- Executável inicial executado com sucesso.
+- O GitHub Actions não apresentou uma execução disponível no momento da verificação; portanto, a configuração do CI está presente, mas a execução remota ainda precisa ser observada quando houver um workflow run.
+
+Próximo objetivo funcional:
+criar o visualizador 3D inicial, mantendo o core independente do renderer.
+
+# FASE 0 — FUNDAÇÃO
+Status: CONCLUÍDA
+
+Checklist:
+- [x] Repositório.
+- [x] Roadmap.
+- [x] Continuidade.
+- [x] Stack definida: C++20 + CMake.
+- [x] Estrutura de pastas.
+- [x] Build.
+- [x] Aplicação inicial.
+- [x] Testes.
+- [x] CI.
+- [x] Logs.
+- [x] Documentação de arquitetura.
+- [x] Guia de desenvolvimento.
+
+O que foi feito:
+- Criado CMakeLists.txt com biblioteca core, aplicação e testes.
+- Criado CMakePresets.json.
+- Criado .gitignore.
+- Criado core com Version e Logger.
+- Criado executável auto-animation.
+- Criado teste foundation via CTest.
+- Criado workflow .github/workflows/ci.yml.
+- Criada a estrutura-base para animation, rigging, deformation, motion, ai, importer, exporter, viewer, ui, plugins, examples, assets e scripts.
+- Criados docs/ARCHITECTURE.md e docs/DEVELOPMENT.md.
+
+Última atividade:
+Implementação completa da fundação e validação do build/teste.
+
+Problemas:
+Nenhum bloqueador técnico encontrado na fundação.
+Observação: não houve workflow remoto disponível no GitHub no momento da checagem; a validação executada localmente passou integralmente.
+
+Testes:
+- CMake configure: PASS
+- CMake build: PASS
+- CTest: 1/1 PASS
+- Executável inicial: PASS
+- Warnings de compilação: sem erro no build de validação
+- CI: configuração criada; execução remota pendente de aparecer no Actions
+
+Commit/marcos:
+- ROADMAP.md: 589f40a26971b3ef14bf8c9afeb530064fe6d580
+- CONTINUITY.md inicial: 7bea77b96aa03413b16677a50702031dccf33e91
+- Fundação: commits sequenciais na branch main, finalizando com a atualização desta continuidade.
+
+---
+
+# FASE 1 — VISUALIZADOR 3D
+Status: NÃO INICIADA
+
+Objetivo:
+Criar o visualizador que acompanhará todo o desenvolvimento.
+
+Checklist:
+- [ ] Escolher renderer/framework.
+- [ ] Janela.
+- [ ] Renderer.
+- [ ] Câmera orbit.
+- [ ] Pan.
+- [ ] Zoom.
+- [ ] Grid.
+- [ ] Eixos.
+- [ ] Iluminação.
+- [ ] Wireframe.
+- [ ] Solid.
+- [ ] Textured.
+- [ ] Seleção de objetos.
+- [ ] Gizmos.
+- [ ] Estatísticas/FPS.
+- [ ] Base para skeleton overlay.
+- [ ] Timeline.
+- [ ] Play/Pause.
+- [ ] Loop.
+- [ ] Scrubbing.
+- [ ] Controle de velocidade.
+- [ ] Frame stepping.
+- [ ] Testes do viewer.
+
+O que foi feito:
+—
+
+Última atividade:
+—
+
+Problemas:
+—
+
+Próximo passo:
+Definir e integrar o renderer da Fase 1 sem acoplar o core de animação a uma tecnologia gráfica específica.
+
+Testes:
+—
+
+Commit:
+—
+
+---
+
+# FASES 2–30
+
+O roadmap detalhado permanece em ROADMAP.md. Ao concluir cada fase, atualizar aqui:
+- status;
+- checklist;
+- o que foi feito;
+- testes;
+- problemas;
+- commit;
+- próximo passo.
+
 # OBJETIVO FINAL
 
 A ferramenta deverá:
@@ -39,1062 +177,9 @@ A ferramenta deverá:
 - Utilizar IA opcionalmente.
 - Fazer retarget.
 - Editar keyframes.
-- Visualizar tudo em 3D.
 - Validar animações.
 - Exportar para games.
 - Integrar com Unreal/Age of AetheR.
-
-# STATUS GERAL
-
-Fase atual: 0 — Fundação
-Estado: EM ANDAMENTO
-Última fase concluída: nenhuma
-Último marco: repositório criado; roadmap e continuidade definidos.
-
-Estado real inicial:
-- Repositório criado.
-- Repositório inicialmente vazio.
-- Roadmap criado.
-- Continuidade criada.
-- Próximo trabalho: fundação técnica.
-- Não pular diretamente para IA.
-- Primeiro objetivo funcional: importação → marcação → auto-rig → FlyIdle → preview → export.
-
----
-
-# FASE 0 — FUNDAÇÃO
-Status: EM ANDAMENTO
-
-Objetivo:
-Criar base técnica compilável e testável.
-
-Checklist:
-- [x] Repositório.
-- [x] Roadmap.
-- [x] Continuidade.
-- [ ] Stack definida.
-- [ ] Estrutura de pastas.
-- [ ] Build.
-- [ ] Aplicação inicial.
-- [ ] Testes.
-- [ ] CI.
-- [ ] Logs.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 1 — VISUALIZADOR 3D
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] Janela.
-- [ ] Renderer.
-- [ ] Câmera.
-- [ ] Grid.
-- [ ] Iluminação.
-- [ ] Gizmos.
-- [ ] Seleção.
-- [ ] Timeline.
-- [ ] Playback.
-- [ ] Skeleton overlay.
-- [ ] Estatísticas.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 2 — IMPORTAÇÃO
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] FBX.
-- [ ] GLB/glTF.
-- [ ] Mesh.
-- [ ] Materials.
-- [ ] Textures.
-- [ ] Skeleton.
-- [ ] Skin.
-- [ ] Existing animations.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 3 — MODELO INTERNO UNIVERSAL
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] Asset.
-- [ ] Mesh.
-- [ ] Skeleton.
-- [ ] Bone.
-- [ ] Rig.
-- [ ] Pose.
-- [ ] AnimationClip.
-- [ ] Curves.
-- [ ] Keyframes.
-- [ ] Procedural parameters.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 4 — SKELETON INSPECTOR
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] Hierarchy.
-- [ ] Selection.
-- [ ] Bone creation.
-- [ ] Reparent.
-- [ ] Rename.
-- [ ] Orientation.
-- [ ] Mirror.
-- [ ] Visualization.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 5 — MARCAÇÃO ANATÔMICA
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] Humanoid markers.
-- [ ] Generic markers.
-- [ ] Custom markers.
-- [ ] Persistence.
-- [ ] Validation.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 6 — CLASSIFICAÇÃO ESTRUTURAL
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] Humanoid.
-- [ ] Quadruped.
-- [ ] Bird.
-- [ ] Winged humanoid.
-- [ ] Multi-legged.
-- [ ] Serpentine.
-- [ ] Insectoid.
-- [ ] Aquatic.
-- [ ] Plant.
-- [ ] Object.
-- [ ] Custom creature.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 7 — AUTO-RIGGING
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] Skeleton generation.
-- [ ] Bone placement.
-- [ ] Bone orientation.
-- [ ] IK chains.
-- [ ] Constraints.
-- [ ] Humanoid.
-- [ ] Quadruped.
-- [ ] Wing.
-- [ ] Custom rig.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 8 — SKINNING
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] Automatic weights.
-- [ ] Normalization.
-- [ ] Influence limits.
-- [ ] Mirror.
-- [ ] Visualization.
-- [ ] Smoothing.
-- [ ] Manual correction.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 9 — IK/FK
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] Two-bone IK.
-- [ ] Chain IK.
-- [ ] Foot IK.
-- [ ] Hand IK.
-- [ ] Tail IK.
-- [ ] Wing IK.
-- [ ] FK.
-- [ ] Constraints.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 10 — POSE EDITOR
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] Pose creation.
-- [ ] Save/load.
-- [ ] Mirror.
-- [ ] Blend.
-- [ ] Pose library.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 11 — ANIMATION EDITOR
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] Timeline.
-- [ ] Tracks.
-- [ ] Keyframes.
-- [ ] Curves.
-- [ ] Graph editor.
-- [ ] Interpolation.
-- [ ] Loop.
-- [ ] Root motion.
-- [ ] Events.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 12 — BIBLIOTECA PROCEDURAL
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] Humanoid locomotion.
-- [ ] Combat.
-- [ ] Quadruped locomotion.
-- [ ] Bird movement.
-- [ ] Creature movement.
-- [ ] Plant movement.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 13 — ANIMATION INTENT
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] Intent schema.
-- [ ] Prompt parser.
-- [ ] Validation.
-- [ ] Intent preview.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 14 — GERAÇÃO PROCEDURAL POR INTENÇÃO
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] Motion planner.
-- [ ] Pose planner.
-- [ ] IK integration.
-- [ ] Timing.
-- [ ] Curves.
-- [ ] Loop correction.
-- [ ] FlyIdle.
-- [ ] Attack.
-- [ ] Walk.
-- [ ] Run.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 15 — IA
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] Backend abstraction.
-- [ ] Text input.
-- [ ] Motion generation backend.
-- [ ] Result validation.
-- [ ] Fallback without AI.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 16 — RETARGET
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] Mapping.
-- [ ] Automatic mapping.
-- [ ] Manual mapping.
-- [ ] Pose normalization.
-- [ ] Scale correction.
-- [ ] IK correction.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 17 — PROCEDURAL AVANÇADO
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] Foot placement.
-- [ ] Terrain adaptation.
-- [ ] Look-at.
-- [ ] Aim.
-- [ ] Secondary motion.
-- [ ] Tail.
-- [ ] Wings.
-- [ ] Head stabilization.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 18 — ASAS E ACESSÓRIOS
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] Wing rig.
-- [ ] Wing animation.
-- [ ] FlyIdle.
-- [ ] Takeoff.
-- [ ] Flight.
-- [ ] FlyAttack.
-- [ ] Accessory controllers.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 19 — PLANTAS
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] Plant profile.
-- [ ] Wind.
-- [ ] Branch motion.
-- [ ] Leaf motion.
-- [ ] Growth.
-- [ ] Interaction.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 20 — CRIATURAS ESPECIAIS
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] Dragon.
-- [ ] Spider.
-- [ ] Snake.
-- [ ] Aquatic.
-- [ ] Multi-limb.
-- [ ] Boss.
-- [ ] Custom profile.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 21 — MOTION GRAPH
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] States.
-- [ ] Transitions.
-- [ ] Conditions.
-- [ ] Blend.
-- [ ] Layers.
-- [ ] Events.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 22 — VIEWER AVANÇADO
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] Multi-asset.
-- [ ] Comparison.
-- [ ] Motion trails.
-- [ ] Bone trajectories.
-- [ ] IK visualization.
-- [ ] Graph visualization.
-- [ ] Profiling.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 23 — VALIDATION
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] Skeleton validation.
-- [ ] Skin validation.
-- [ ] Animation validation.
-- [ ] Loop validation.
-- [ ] Foot sliding.
-- [ ] Ground penetration.
-- [ ] Export validation.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 24 — EXPORT
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] FBX.
-- [ ] GLB/glTF.
-- [ ] Naming.
-- [ ] FPS.
-- [ ] Root motion.
-- [ ] Coordinate conversion.
-- [ ] Clip export.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 25 — UNREAL
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] Unreal-ready FBX.
-- [ ] Import validation.
-- [ ] Skeleton compatibility.
-- [ ] Animation compatibility.
-- [ ] Optional plugin.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 26 — PRESETS MMORPG
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] Humanoid RPG.
-- [ ] Flying RPG.
-- [ ] Quadruped RPG.
-- [ ] Monster.
-- [ ] Boss.
-- [ ] NPC.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 27 — BATCH E PERFORMANCE
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] Batch import.
-- [ ] Batch rig.
-- [ ] Batch animation.
-- [ ] Batch retarget.
-- [ ] Batch export.
-- [ ] Queue.
-- [ ] Cache.
-- [ ] Background processing.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 28 — SISTEMA DE PROJETOS
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] Project file.
-- [ ] Asset registry.
-- [ ] Rig profiles.
-- [ ] Animation profiles.
-- [ ] Pose library.
-- [ ] Export settings.
-- [ ] Autosave/recovery.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 29 — UX
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] New project.
-- [ ] Import workflow.
-- [ ] Analyze.
-- [ ] Rig workflow.
-- [ ] Animation workflow.
-- [ ] Preview.
-- [ ] Validation.
-- [ ] Export.
-- [ ] Beginner-friendly interface.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# FASE 30 — RELEASE
-Status: NÃO INICIADA
-
-Checklist:
-- [ ] Full regression.
-- [ ] Documentation.
-- [ ] Sample assets.
-- [ ] Windows build.
-- [ ] Installer/package.
-- [ ] Performance.
-- [ ] Error recovery.
-- [ ] Unreal pipeline.
-- [ ] End-to-end tests.
-
-O que foi feito:
-—
-
-Última atividade:
-—
-
-Problemas:
-—
-
-Próximo passo:
-—
-
-Testes:
-—
-
-Commit:
-—
-
----
-
-# LOG DE DESENVOLVIMENTO
-
-Data:
-Fase:
-Branch:
-Commit:
-Objetivo:
-
-Feito:
-—
-
-Testado:
-—
-
-Resultado:
-—
-
-Erros:
-—
-
-Próximo passo:
-—
-
----
 
 # REGRAS DE CONTINUIDADE
 

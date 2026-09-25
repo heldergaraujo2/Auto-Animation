@@ -174,34 +174,27 @@ ImportResult AssimpImporter::import_file(
             clip.duration_seconds = animation->mTicksPerSecond > 0.0
                 ? animation->mDuration / animation->mTicksPerSecond
                 : animation->mDuration;
-            clip.ticks_per_second = animation->mTicksPerSecond;
+            clip.sample_rate = animation->mTicksPerSecond > 0.0 ? animation->mTicksPerSecond : 0.0;
 
             for (unsigned int c = 0; c < animation->mNumChannels; ++c) {
                 const aiNodeAnim* channel = animation->mChannels[c];
                 AnimationTrack track;
                 track.bone_name = channel->mNodeName.C_Str();
-                const unsigned int count = std::max(
-                    channel->mNumPositionKeys,
-                    std::max(channel->mNumRotationKeys, channel->mNumScalingKeys));
-                track.keyframes.reserve(count);
-                for (unsigned int k = 0; k < count; ++k) {
-                    Keyframe key;
-                    if (k < channel->mNumPositionKeys) {
-                        const auto& p = channel->mPositionKeys[k];
-                        key.time_seconds = animation->mTicksPerSecond > 0.0 ? p.mTime / animation->mTicksPerSecond : p.mTime;
-                        key.translation = {p.mValue.x,p.mValue.y,p.mValue.z};
-                    }
-                    if (k < channel->mNumRotationKeys) {
-                        const auto& r = channel->mRotationKeys[k];
-                        key.time_seconds = animation->mTicksPerSecond > 0.0 ? r.mTime / animation->mTicksPerSecond : r.mTime;
-                        key.rotation = {r.mValue.x,r.mValue.y,r.mValue.z,r.mValue.w};
-                    }
-                    if (k < channel->mNumScalingKeys) {
-                        const auto& s = channel->mScalingKeys[k];
-                        key.time_seconds = animation->mTicksPerSecond > 0.0 ? s.mTime / animation->mTicksPerSecond : s.mTime;
-                        key.scale = {s.mValue.x,s.mValue.y,s.mValue.z};
-                    }
-                    track.keyframes.push_back(key);
+                const double ticks = animation->mTicksPerSecond > 0.0 ? animation->mTicksPerSecond : 1.0;
+                track.translation.keys.reserve(channel->mNumPositionKeys);
+                for (unsigned int k = 0; k < channel->mNumPositionKeys; ++k) {
+                    const auto& p = channel->mPositionKeys[k];
+                    track.translation.keys.push_back({p.mTime / ticks, {p.mValue.x,p.mValue.y,p.mValue.z}, animation::Interpolation::Linear});
+                }
+                track.rotation.keys.reserve(channel->mNumRotationKeys);
+                for (unsigned int k = 0; k < channel->mNumRotationKeys; ++k) {
+                    const auto& r = channel->mRotationKeys[k];
+                    track.rotation.keys.push_back({r.mTime / ticks, {r.mValue.x,r.mValue.y,r.mValue.z,r.mValue.w}, animation::Interpolation::Spherical});
+                }
+                track.scale.keys.reserve(channel->mNumScalingKeys);
+                for (unsigned int k = 0; k < channel->mNumScalingKeys; ++k) {
+                    const auto& s = channel->mScalingKeys[k];
+                    track.scale.keys.push_back({s.mTime / ticks, {s.mValue.x,s.mValue.y,s.mValue.z}, animation::Interpolation::Linear});
                 }
                 clip.tracks.push_back(std::move(track));
             }

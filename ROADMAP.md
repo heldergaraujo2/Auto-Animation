@@ -116,6 +116,8 @@ Projeto compila/executa e abre uma aplicação inicial.
 
 # FASE 1 — VISUALIZADOR 3D + FRONTEIRA UNIVERSAL DE ASSET
 
+**Status: CONCLUÍDA**
+
 ## Objetivo
 
 Criar o visualizador que acompanhará todo o desenvolvimento e estabelecer a fronteira entre a representação interna do projeto e qualquer formato de arquivo externo.
@@ -179,7 +181,16 @@ A aplicação abre uma janela 3D, renderiza uma cena demonstrativa animada, perm
 
 ---
 
+
+## Registro da Fase 1
+
+Implementação concluída no repositório com SDL2 + OpenGL isolados no viewer, demonstração 3D animada, câmera orbit, zoom, grid, eixos, wireframe, play/pause, frame stepping e self-test determinístico. O CI final executou configure, build, CTest e self-test gráfico em Xvfb com sucesso.
+
+A necessidade de múltiplos formatos foi incorporada à arquitetura antes da importação: o viewer não conhecerá formatos externos e a Fase 2 utilizará detector + registry + adapters + representação universal. Formatos-alvo incluem FBX, GLB/GLTF, OBJ, SMD, DAE, 3DS, STL, PLY e formatos proprietários/MU. “SMB” permanece como item a confirmar antes de qualquer parser específico.
+
 # FASE 2 — IMPORTAÇÃO UNIVERSAL DE ASSETS
+
+**Status: NÃO INICIADA**
 
 ## Objetivo
 

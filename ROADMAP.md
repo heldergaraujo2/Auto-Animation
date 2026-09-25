@@ -291,29 +291,38 @@ Importar pelo menos FBX, GLB/GLTF, OBJ e SMD na primeira implementação útil, 
 
 # FASE 3 — MODELO INTERNO UNIVERSAL DE ANIMAÇÃO
 
+**Status: CONCLUÍDA**
+
 ## Objetivo
 
-Criar a representação interna que permitirá tratar qualquer família de asset.
+Criar um núcleo de animação independente de formatos de arquivo, renderer e UI.
 
-## Entidades
+## Implementação
 
-Asset, Mesh, Skeleton, Bone, Joint, Constraint, Rig, Pose, AnimationClip, AnimationTrack, Curve, Keyframe, MotionProfile, Deformer e Controller.
+- [x] Biblioteca auto_animation_animation independente.
+- [x] Transform universal com translation, quaternion rotation e scale.
+- [x] Curvas independentes para translation, rotation e scale.
+- [x] Keyframes com tempo próprio por canal.
+- [x] Interpolação Step, Linear e Spherical.
+- [x] Amostragem de curvas e clips.
+- [x] Looping e clamp de reprodução.
+- [x] Pose/bind-pose como fallback para canais ausentes.
+- [x] Metadados de sample rate, looping e root motion.
+- [x] Validação de duração, tempos, valores finitos, quaternion e ordenação.
+- [x] Importer Assimp convertido para preservar os tempos independentes dos canais.
+- [x] Modelo de animação removido da dependência estrutural do importer.
+- [x] Testes unitários do núcleo.
+- [x] Regressão das fases anteriores via CTest e CI.
 
-## Tipos de movimento
+## Problema crítico corrigido
 
-- Transform.
-- Rotation.
-- Translation.
-- Scale.
-- Morph target.
-- Material parameter.
-- Procedural parameter.
+A representação anterior agrupava translation/rotation/scale em um único Keyframe e usava o mesmo índice k para os três canais. Isso poderia associar tempos incorretos quando os canais tivessem quantidades ou timestamps diferentes.
 
-## Critério
+A Fase 3 substitui isso por três curvas independentes, preservando a informação temporal original de cada canal.
 
-Criar e reproduzir uma animação internamente sem depender de FBX.
+## Critério atingido
 
----
+Uma animação pode ser criada, validada, amostrada e reproduzida internamente sem depender de FBX, Assimp ou qualquer outro formato.
 
 # FASE 4 — SKELETON INSPECTOR E EDIÇÃO MANUAL
 

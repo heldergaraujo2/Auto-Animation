@@ -1,6 +1,8 @@
 #pragma once
 
 #include <cstdint>
+
+namespace auto_animation::rigging { struct Skeleton; }
 #include <string>
 
 namespace auto_animation::viewer {
@@ -30,6 +32,7 @@ public:
     void run();
     void run_for_frames(std::uint64_t frame_count);
     void request_close();
+    void set_skeleton(const rigging::Skeleton* skeleton);
 
     [[nodiscard]] bool initialized() const noexcept;
     [[nodiscard]] const ViewerStats& stats() const noexcept;

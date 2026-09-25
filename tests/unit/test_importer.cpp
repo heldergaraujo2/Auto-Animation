@@ -39,6 +39,11 @@ int main(int argc, char** argv) {
     expect(obj.asset.meshes.size() == 1, "OBJ produces one mesh");
     expect(obj.asset.meshes[0].indices.size() == 6, "OBJ produces two triangles");
 
+    const auto fbx = registry.import(root / "triangle.fbx");
+    if (!fbx) std::cerr << "FBX ERROR: " << fbx.error << "\\n";
+    expect(static_cast<bool>(fbx), "FBX import succeeds");
+    expect(!fbx.asset.meshes.empty(), "FBX produces geometry");
+
     const auto gltf = registry.import(root / "triangle.gltf");
     if (!gltf) std::cerr << "GLTF ERROR: " << gltf.error << "\\n";
     expect(static_cast<bool>(gltf), "GLTF import succeeds");

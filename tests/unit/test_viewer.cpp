@@ -35,6 +35,7 @@ int main() {
     markers.profile = "Humanoid";
     markers.add_or_replace({auto_animation::anatomy::MarkerType::Head,"",{0,2,0},{0,1,0},auto_animation::anatomy::MarkerSpace::Object,-1,1.0f,true});
     viewer.set_markers(&markers);
+    viewer.set_editable_markers(&markers);
     viewer.request_close();
     return failures;
 }

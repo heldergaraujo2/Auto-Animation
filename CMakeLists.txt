@@ -19,11 +19,14 @@ add_library(auto_animation_core
 add_library(auto_animation_animation
     animation/src/Animation.cpp
     animation/src/Blending.cpp
+    animation/src/MotionDatabase.cpp
 )
 add_library(auto_animation_rigging
     rigging/src/Skeleton.cpp
     rigging/src/Retargeting.cpp
     rigging/src/AutoRig.cpp
+    rigging/src/IK.cpp
+    rigging/src/BoneRecognition.cpp
 )
 target_include_directories(auto_animation_rigging PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/rigging/include
@@ -59,6 +62,8 @@ endif()
 
 add_library(auto_animation_anatomy
     anatomy/src/Markers.cpp
+    anatomy/src/MarkerEditor.cpp
+    anatomy/src/MarkerProfileIO.cpp
 )
 target_include_directories(auto_animation_anatomy PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/anatomy/include)
 target_link_libraries(auto_animation_anatomy PUBLIC auto_animation_animation)
@@ -80,6 +85,18 @@ if(MSVC)
     target_compile_options(auto_animation_motion PRIVATE /W4 /permissive-)
 else()
     target_compile_options(auto_animation_motion PRIVATE -Wall -Wextra -Wpedantic)
+endif()
+
+add_library(auto_animation_deformation
+    deformation/src/Skinning.cpp
+)
+target_include_directories(auto_animation_deformation PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/deformation/include)
+target_link_libraries(auto_animation_deformation PUBLIC auto_animation_animation auto_animation_rigging)
+target_compile_features(auto_animation_deformation PUBLIC cxx_std_20)
+if(MSVC)
+    target_compile_options(auto_animation_deformation PRIVATE /W4 /permissive-)
+else()
+    target_compile_options(auto_animation_deformation PRIVATE -Wall -Wextra -Wpedantic)
 endif()
 
 if(AUTO_ANIMATION_BUILD_IMPORTERS)
@@ -185,6 +202,14 @@ if(AUTO_ANIMATION_BUILD_TESTS)
     target_link_libraries(auto-animation-anatomy-tests PRIVATE auto_animation_anatomy)
     add_test(NAME anatomy COMMAND auto-animation-anatomy-tests)
 
+    add_executable(auto-animation-marker-editor-tests tests/unit/test_marker_editor.cpp)
+    target_link_libraries(auto-animation-marker-editor-tests PRIVATE auto_animation_anatomy)
+    add_test(NAME marker-editor COMMAND auto-animation-marker-editor-tests)
+
+    add_executable(auto-animation-marker-profile-io-tests tests/unit/test_marker_profile_io.cpp)
+    target_link_libraries(auto-animation-marker-profile-io-tests PRIVATE auto_animation_anatomy)
+    add_test(NAME marker-profile-io COMMAND auto-animation-marker-profile-io-tests)
+
     add_executable(auto-animation-blending-tests tests/unit/test_blending.cpp)
     target_link_libraries(auto-animation-blending-tests PRIVATE auto_animation_animation)
     add_test(NAME blending COMMAND auto-animation-blending-tests)
@@ -201,6 +226,22 @@ if(AUTO_ANIMATION_BUILD_TESTS)
     add_executable(auto-animation-retargeting-tests tests/unit/test_retargeting.cpp)
     target_link_libraries(auto-animation-retargeting-tests PRIVATE auto_animation_rigging)
     add_test(NAME retargeting COMMAND auto-animation-retargeting-tests)
+
+    add_executable(auto-animation-ik-tests tests/unit/test_ik.cpp)
+    target_link_libraries(auto-animation-ik-tests PRIVATE auto_animation_rigging)
+    add_test(NAME ik COMMAND auto-animation-ik-tests)
+
+    add_executable(auto-animation-bone-recognition-tests tests/unit/test_bone_recognition.cpp)
+    target_link_libraries(auto-animation-bone-recognition-tests PRIVATE auto_animation_rigging)
+    add_test(NAME bone-recognition COMMAND auto-animation-bone-recognition-tests)
+
+    add_executable(auto-animation-motion-database-tests tests/unit/test_motion_database.cpp)
+    target_link_libraries(auto-animation-motion-database-tests PRIVATE auto_animation_animation)
+    add_test(NAME motion-database COMMAND auto-animation-motion-database-tests)
+
+    add_executable(auto-animation-skinning-tests tests/unit/test_skinning.cpp)
+    target_link_libraries(auto-animation-skinning-tests PRIVATE auto_animation_deformation)
+    add_test(NAME skinning COMMAND auto-animation-skinning-tests)
 
     add_executable(auto-animation-procedural-tests tests/unit/test_procedural.cpp)
     target_link_libraries(auto-animation-procedural-tests PRIVATE auto_animation_motion)

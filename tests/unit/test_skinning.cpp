@@ -1,0 +1,3 @@
+#include "auto_animation/deformation/Skinning.hpp"
+#include <cassert>
+int main(){using namespace auto_animation;rigging::Skeleton s;int r=s.add_bone("root",-1);int c=s.add_bone("child",r,{{0,1,0},{0,0,0,1},{1,1,1}});auto w=deformation::generate_heat_weights({{0,.9f,0},{0,0,0}},s);assert(w.valid());deformation::SkinVertex v;v.position={0,1.5f,0};v.bone_indices[0]=c;v.bone_weights[0]=1;s.bones[c].local_pose.translation={0,2,0};auto p=deformation::apply_lbs(v,s);assert(p.y>2.4f&&p.y<2.6f);auto d=deformation::apply_dual_quaternion(v,s);assert(d.y>2.4f&&d.y<2.6f);return 0;}

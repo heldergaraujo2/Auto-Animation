@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstdint>
+#include <string>
 
 namespace auto_animation::anatomy { struct MarkerSet; }
 
@@ -36,6 +37,9 @@ public:
     void request_close();
     void set_skeleton(const rigging::Skeleton* skeleton);
     void set_markers(const anatomy::MarkerSet* markers);
+    void set_editable_markers(anatomy::MarkerSet* markers);
+    bool save_editable_markers(const std::string& path, std::string& error) const;
+    bool load_editable_markers(const std::string& path, std::string& error);
 
     [[nodiscard]] bool initialized() const noexcept;
     [[nodiscard]] const ViewerStats& stats() const noexcept;

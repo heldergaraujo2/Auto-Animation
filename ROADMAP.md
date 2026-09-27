@@ -410,6 +410,23 @@ Root, Pelvis, Spine, Chest, Neck, Head, Shoulder L/R, Elbow L/R, Wrist L/R, Hand
 
 Salvar perfil anatômico reproduzível e utilizável pelo auto-rigger.
 
+## Resultado da Fase 5
+
+- [x] MarkerSet universal humanoide/genérico.
+- [x] Validação de coordenadas, confiança, duplicidade e campos obrigatórios.
+- [x] Serialização/deserialização versionada.
+- [x] Persistência em arquivo com rejeição segura de perfis inválidos.
+- [x] MarkerEditor independente de UI para selecionar, criar, remover, mover, espelhar e ajustar marcadores.
+- [x] Viewer com modo de edição visual, seleção por proximidade, arraste 3D, criação, remoção e espelhamento.
+- [x] Atalhos para trocar tipo ativo e mover por teclado.
+- [x] Atalhos Ctrl+S/Ctrl+O para persistência do perfil.
+- [x] Demonstração --marker-editor.
+- [x] Testes unitários de MarkerEditor e persistência.
+- [x] Integração direta com o AutoRig existente.
+- [x] Documentação em docs/ANATOMY_MARKERS.md.
+
+A criação visual usa um plano 3D de referência enquanto a malha universal ainda não é renderizada no Viewer. A arquitetura mantém o ponto de troca preparado para raycast na superfície real quando o pipeline de Mesh for conectado.
+
 ---
 
 # FASE 6 — CLASSIFICAÇÃO ESTRUTURAL
@@ -1232,7 +1249,7 @@ A investigação externa foi incorporada sem copiar código incompatível para o
 
 ## Próximos marcos técnicos derivados da pesquisa
 
-1. Marcação diretamente na malha no viewer.
+1. [x] Marcação visual no Viewer, com edição persistível.
 2. Classificação estrutural baseada em marcadores + skeleton + geometria.
 3. Auto-rigging backend isolado.
 4. Skinning/deformation.
@@ -1242,3 +1259,45 @@ A investigação externa foi incorporada sem copiar código incompatível para o
 8. BMD/OZJ adapter.
 9. Batch/LOD.
 10. Animation Intent e backend de IA substituível.
+
+
+# MARCO TÉCNICO — RIGGING/ANIMATION RESEARCH EXPANSION — 2026-09-27
+
+Implementações nativas adicionadas a partir da investigação ampliada:
+
+- [x] Automatic heat-like skin weights com até 4 influências.
+- [x] Linear Blend Skinning.
+- [x] Dual Quaternion Skinning para transforms rígidos, com fallback seguro para LBS quando há escala não-unitária.
+- [x] FABRIK IK engine independente de renderer.
+- [x] IK chains, goals, tolerância e iterações.
+- [x] Reconhecimento semântico de bones por aliases/prefixos comuns.
+- [x] Motion feature database com posição, velocidade e energia de pose.
+- [x] Busca de vizinho mais próximo como base de Motion Matching.
+- [x] Testes unitários e targets CTest para os novos módulos.
+- [x] Documentação de licenciamento e decisão de não copiar código incompatível.
+
+Os algoritmos são implementações próprias. As referências externas servem como base conceitual; código com licença incompatível não foi incorporado literalmente.
+
+Próximas extensões:
+1. pesos geométricos mais avançados e envelopes por cadeia;
+2. IK com orientação, pole vectors e limites;
+3. retarget com offsets, escala por cadeia e correção de pés;
+4. reconhecimento combinando nomes + hierarquia + marcadores + geometria;
+5. motion matching com janelas temporais e trajetória futura;
+6. integração visual dos marcadores e goals no Viewer.
+
+
+# MARCO TÉCNICO — FASE 5 CONCLUÍDA — 2026-09-27
+
+- [x] Núcleo anatômico validável.
+- [x] Editor de marcadores desacoplado da UI.
+- [x] Edição visual integrada ao Viewer.
+- [x] Persistência versionada em arquivo.
+- [x] Integração com auto-rigging.
+- [x] Testes unitários adicionados.
+- [ ] CI do SHA final desta rodada ainda precisa executar; a fase só deve ser considerada operacionalmente validada após Configure + Build + CTest.
+
+
+# MARCO DE VALIDAÇÃO — 2026-09-27
+
+A Fase 5 está concluída em implementação. O CI mantém Configure + Build + CTest + self-test gráfico e agora também aceita workflow_dispatch. A execução efetiva do workflow final não ocorreu nesta sessão porque a integração GitHub disponível não dispara Actions para os commits realizados nem expõe workflow_dispatch; portanto o estado correto é "implementação concluída / validação CI pendente".

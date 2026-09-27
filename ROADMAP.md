@@ -1296,3 +1296,8 @@ Próximas extensões:
 - [x] Integração com auto-rigging.
 - [x] Testes unitários adicionados.
 - [ ] CI do SHA final desta rodada ainda precisa executar; a fase só deve ser considerada operacionalmente validada após Configure + Build + CTest.
+
+
+# MARCO DE VALIDAÇÃO — 2026-09-27
+
+A Fase 5 está concluída em implementação. O CI mantém Configure + Build + CTest + self-test gráfico e agora também aceita workflow_dispatch. A execução efetiva do workflow final não ocorreu nesta sessão porque a integração GitHub disponível não dispara Actions para os commits realizados nem expõe workflow_dispatch; portanto o estado correto é "implementação concluída / validação CI pendente".

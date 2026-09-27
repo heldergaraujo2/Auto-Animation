@@ -1242,3 +1242,29 @@ A investigação externa foi incorporada sem copiar código incompatível para o
 8. BMD/OZJ adapter.
 9. Batch/LOD.
 10. Animation Intent e backend de IA substituível.
+
+
+# MARCO TÉCNICO — RIGGING/ANIMATION RESEARCH EXPANSION — 2026-09-27
+
+Implementações nativas adicionadas a partir da investigação ampliada:
+
+- [x] Automatic heat-like skin weights com até 4 influências.
+- [x] Linear Blend Skinning.
+- [x] Dual Quaternion Skinning para transforms rígidos, com fallback seguro para LBS quando há escala não-unitária.
+- [x] FABRIK IK engine independente de renderer.
+- [x] IK chains, goals, tolerância e iterações.
+- [x] Reconhecimento semântico de bones por aliases/prefixos comuns.
+- [x] Motion feature database com posição, velocidade e energia de pose.
+- [x] Busca de vizinho mais próximo como base de Motion Matching.
+- [x] Testes unitários e targets CTest para os novos módulos.
+- [x] Documentação de licenciamento e decisão de não copiar código incompatível.
+
+Os algoritmos são implementações próprias. As referências externas servem como base conceitual; código com licença incompatível não foi incorporado literalmente.
+
+Próximas extensões:
+1. pesos geométricos mais avançados e envelopes por cadeia;
+2. IK com orientação, pole vectors e limites;
+3. retarget com offsets, escala por cadeia e correção de pés;
+4. reconhecimento combinando nomes + hierarquia + marcadores + geometria;
+5. motion matching com janelas temporais e trajetória futura;
+6. integração visual dos marcadores e goals no Viewer.

@@ -408,3 +408,30 @@ A branch de integração contém código novo, mas a execução remota do CI ain
 Branch: integration/research-improvements
 Último commit: 7a95374459f60cecb6d23ba51d61d160c842047a
 Próxima ação: aguardar o CI final do PR #1; corrigir qualquer erro antes de incorporar a branch. Depois, concluir edição visual de marcadores.
+
+
+# MARCO DE IMPLEMENTAÇÃO — EXPANSÃO DE RIGGING/ANIMATION — 2026-09-27
+
+## Implementado nesta rodada
+- [x] Módulo deformation com geração automática de pesos heat-like.
+- [x] Linear Blend Skinning.
+- [x] Dual Quaternion Skinning com fallback para LBS em escala não-unitária.
+- [x] Módulo IK com solver FABRIK e aplicação inicial de pose.
+- [x] Reconhecimento semântico de bones por nomes normalizados e aliases.
+- [x] MotionDatabase para features de pose, posição e velocidade.
+- [x] Busca nearest-neighbor como fundação de Motion Matching.
+- [x] Testes CTest para skinning, IK, reconhecimento e motion database.
+- [x] Documentação docs/ADVANCED_RIGGING.md.
+
+## Limitações conhecidas
+- Os pesos atuais são heat-like por distância a segmentos, não uma implementação literal de BBW.
+- DQS usa transforms rígidos; escala não-unitária cai para LBS.
+- FABRIK é posicional e ainda não aplica orientação, pole vector ou limites angulares.
+- Reconhecimento atual usa nomes/aliases; geometria e marcadores ainda serão combinados.
+- MotionDatabase atual é uma fundação de busca; não possui ainda janela de trajetória futura, blending de saída ou índice acelerado.
+
+## Validação
+A alteração deve ser considerada em andamento até o GitHub Actions validar Configure, Build e CTest no commit final desta rodada.
+
+## Próximo passo
+Aguardar/corrigir o CI; depois conectar edição visual de marcadores, IK goals e skinning ao Viewer.

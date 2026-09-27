@@ -12,7 +12,6 @@ Quat multiply(const Quat& a, const Quat& b) noexcept {
         a.w*b.w - a.x*b.x - a.y*b.y - a.z*b.z
     };
 }
-Quat inverse(const Quat& q) noexcept { return {-q.x,-q.y,-q.z,q.w}; }
 float weight_at(const std::vector<float>* weights, std::size_t i, float fallback) noexcept {
     if (!weights || i >= weights->size()) return fallback;
     return std::clamp((*weights)[i], 0.0f, 1.0f);

@@ -459,3 +459,51 @@ O CI existente possui Configure/Build/Test e anteriormente validou a base da bra
 
 ## Próxima ação de validação
 Executar o CI do PR #2 sobre o SHA final. Se o workflow reportar erro, corrigir e repetir. Não marcar as fases 8/9/21 como concluídas somente pela existência dos módulos.
+
+
+# MARCO DE IMPLEMENTAÇÃO — FASE 5 CONCLUÍDA EM CÓDIGO — 2026-09-27
+
+## Estado atual
+- Branch: integration/research-improvements
+- PR: #2
+- Fase do roadmap: 5 — Sistema de Marcação Anatômica
+- Estado de implementação: CONCLUÍDA
+- Próxima fase: 6 — Classificação Estrutural
+
+## Entregas concluídas
+- [x] MarkerSet humanoide/genérico com tipos para asas, cauda, mandíbula, chifres, antenas, nadadeiras e tentáculos.
+- [x] Validação de coordenadas finitas, confiança, duplicidade e requisitos.
+- [x] Serialização/deserialização versionada.
+- [x] Persistência em arquivo com validação antes de salvar e rejeição segura ao carregar.
+- [x] MarkerEditor independente de SDL/OpenGL.
+- [x] Seleção, criação, remoção, movimentação, normal, confiança, required e espelhamento.
+- [x] Viewer com seleção visual, arraste, criação por Shift+click, remoção e espelhamento.
+- [x] Edição por teclado e troca do tipo anatômico ativo.
+- [x] Ctrl+S/Ctrl+O no Viewer para persistência do perfil.
+- [x] Modo demonstrativo app: --marker-editor.
+- [x] Testes MarkerEditor e MarkerProfileIO.
+- [x] Integração com build CMake.
+- [x] Documentação docs/ANATOMY_MARKERS.md.
+- [x] Roadmap atualizado.
+
+## Limite técnico explícito
+A criação visual atual usa ray-plane picking porque o Viewer ainda renderiza a cena demonstrativa e não possui o pipeline de Mesh universal conectado à edição. O editor já recebe coordenadas 3D e está isolado; a próxima integração deverá substituir o plano de referência por raycast contra a superfície real da malha quando o Viewer passar a renderizar Assets importados.
+
+## Validação obrigatória antes de declarar operacional
+Os novos commits desta rodada ainda precisam de Configure + Build + CTest no SHA final. Não declarar CI-passed sem workflow associado ao commit final.
+
+## Próxima fase
+Fase 6 — Classificação Estrutural:
+- Humanoid
+- Quadruped
+- Bird
+- Winged Humanoid
+- Multi-Legged
+- Serpentine
+- Insectoid
+- Aquatic
+- Plant
+- Object
+- Custom Creature
+
+O classificador deverá combinar marcadores, skeleton existente e evidências geométricas quando disponíveis, sem forçar anatomia humanoide.

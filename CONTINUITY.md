@@ -26,10 +26,10 @@ O novo chat deverá:
 
 # STATUS GERAL
 
-Fase atual: 4 — Skeleton Inspector e Edição Manual
+Fase atual: 5 — Sistema de Marcação Anatômica
 Estado: NÃO INICIADA
-Última fase concluída: 3 — Modelo Interno Universal de Animação
-Último marco: núcleo universal de animação independente do importer, com curvas temporais independentes, sampling, looping e validação, validado no CI.
+Última fase concluída: 4 — Skeleton Inspector e Edição Manual
+Último marco: skeleton universal editável, inspeção de hierarquia, seleção, bind/local/world transforms, edição segura, mirror e overlay visual, validado no CI.
 
 Estado real após a Fase 0:
 - CMake 3.20+ configurado.
@@ -264,6 +264,47 @@ Commits relevantes:
 
 Próximo passo:
 Fase 4 — Skeleton Inspector e Edição Manual.
+
+---
+
+# FASE 4 — SKELETON INSPECTOR E EDIÇÃO MANUAL
+Status: CONCLUÍDA
+
+Implementação:
+- Criado `auto_animation_rigging` com modelo universal de Bone/Skeleton.
+- Hierarquia com roots/children, busca por nome/índice e seleção.
+- Criação, renomeação, reparent e remoção controlada.
+- Proteção contra ciclos e nomes duplicados.
+- Bind/rest pose e local pose editável.
+- Transformação local para world.
+- Pivot, groups e estado editable/locked.
+- Reset de pose.
+- Mirror por eixo e mirror entre bones.
+- Validação de hierarquia, índices, ciclos, nomes e transforms finitos.
+- inverse bind matrix preservada na importação.
+- Viewer conectado ao skeleton através de overlay de hierarquia.
+- Importer SMD validado com skeleton real de dois bones.
+- Documentação criada em `docs/RIGGING.md`.
+
+Testes finais:
+- CMake configure: PASS.
+- Build completo: PASS.
+- CTest: 5/5 PASS.
+- Foundation: PASS.
+- Animation: PASS.
+- Rigging: PASS.
+- Viewer: PASS.
+- Importer: PASS.
+- Viewer self-test em Xvfb: PASS.
+- GitHub Actions run #89: SUCCESS.
+
+Correções durante a fase:
+- Corrigida declaração duplicada de `Viewer::set_skeleton`.
+- Corrigida cobertura do teste de remoção/reparent.
+- Corrigida fixture SMD para representar explicitamente os dois bones.
+
+Próximo passo:
+Fase 5 — Sistema de Marcação Anatômica.
 
 ---
 

@@ -1,0 +1,4 @@
+#pragma once
+#include "auto_animation/animation/Animation.hpp"
+#include <vector>
+namespace auto_animation::animation{struct MotionFeature{double time=0;Vec3 root_velocity{};Vec3 root_position{};float pose_energy=0;};struct MotionSampleRef{std::size_t clip=0;std::size_t feature=0;float distance=0;};class MotionDatabase{std::vector<MotionFeature>f_;std::vector<MotionSampleRef>r_;public:void clear();void add_clip(const AnimationClip&,float sample_rate=30);const std::vector<MotionFeature>&features()const noexcept{return f_;}MotionSampleRef query(const MotionFeature&)const;};float motion_distance(const MotionFeature&,const MotionFeature&)noexcept;}

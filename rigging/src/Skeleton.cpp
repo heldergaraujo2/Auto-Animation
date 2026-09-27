@@ -81,6 +81,20 @@ bool Skeleton::remove_bone(std::int32_t i,RemovePolicy policy) {
     return true;
 }
 bool Skeleton::set_group(std::int32_t i,std::string group){if(!has_bone(i))return false;bones[i].group=std::move(group);return true;}
+bool Skeleton::set_pivot(std::int32_t i,const animation::Vec3& pivot){if(!has_bone(i)||!finite(pivot))return false;bones[i].pivot=pivot;return true;}
+bool Skeleton::set_editable(std::int32_t i,bool editable){if(!has_bone(i))return false;bones[i].editable=editable;return true;}
+bool Skeleton::select_bone(std::int32_t i){if(i!=-1&&!has_bone(i))return false;selected_bone=i;return true;}
+std::vector<std::int32_t> Skeleton::children_of(std::int32_t i) const{
+    std::vector<std::int32_t> result;
+    if(!has_bone(i)) return result;
+    for(std::size_t n=0;n<bones.size();++n) if(bones[n].parent_index==i) result.push_back(static_cast<std::int32_t>(n));
+    return result;
+}
+std::vector<std::int32_t> Skeleton::roots() const{
+    std::vector<std::int32_t> result;
+    for(std::size_t n=0;n<bones.size();++n) if(bones[n].parent_index==-1) result.push_back(static_cast<std::int32_t>(n));
+    return result;
+}
 bool Skeleton::set_pose_transform(std::int32_t i,const animation::Transform& t){if(!has_bone(i)||!bones[i].editable)return false;bones[i].local_pose=t;return true;}
 bool Skeleton::reset_pose_to_bind(std::int32_t i){if(!has_bone(i))return false;bones[i].local_pose=bones[i].bind_local;return true;}
 bool Skeleton::mirror_pose(std::int32_t i,MirrorAxis axis){

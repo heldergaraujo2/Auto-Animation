@@ -28,12 +28,12 @@ private:
     const std::vector<std::uint8_t>& bytes_; std::size_t off_=0;
 };
 
-struct Vec3 { float x=0,y=0,z=0; };
-struct Key { Vec3 position{}; Vec3 rotation{}; };
+struct BmdVec3 { float x=0,y=0,z=0; };
+struct Key { BmdVec3 position{}; BmdVec3 rotation{}; };
 struct BmdBone { std::string name; std::int16_t parent=-1; bool dummy=false; std::vector<std::vector<Key>> actions; };
 
 constexpr std::size_t kMaxMeshes=4096,kMaxBones=4096,kMaxActions=4096,kMaxElements=1000000,kMaxKeys=100000;
-bool finite(Vec3 v){return std::isfinite(v.x)&&std::isfinite(v.y)&&std::isfinite(v.z);}
+bool finite(BmdVec3 v){return std::isfinite(v.x)&&std::isfinite(v.y)&&std::isfinite(v.z);}
 animation::Quat euler_quat(Vec3 e) {
     const float hx=e.x*0.5f,hy=e.y*0.5f,hz=e.z*0.5f;
     const float sx=std::sin(hx),cx=std::cos(hx),sy=std::sin(hy),cy=std::cos(hy),sz=std::sin(hz),cz=std::cos(hz);
@@ -65,7 +65,7 @@ ImportResult BmdImporter::import_file(const std::filesystem::path& path,const Im
         std::int16_t nv=0,nn=0,nt=0,ntri=0,texture=0;
         if(!r.read_s16(nv)||!r.read_s16(nn)||!r.read_s16(nt)||!r.read_s16(ntri)||!r.read_s16(texture))return{{},"Truncated BMD mesh header."};
         if(nv<0||nn<0||nt<0||ntri<0||!count_ok(static_cast<std::uint32_t>(nv),kMaxElements)||!count_ok(static_cast<std::uint32_t>(nn),kMaxElements)||!count_ok(static_cast<std::uint32_t>(nt),kMaxElements)||!count_ok(static_cast<std::uint32_t>(ntri),kMaxElements))return{{},"Invalid BMD mesh counts."};
-        struct V{std::int16_t node;Vec3 p;};struct N{std::int16_t node;Vec3 n;std::int16_t bind;};struct UV{float u,v;};
+        struct V{std::int16_t node;BmdVec3 p;};struct N{std::int16_t node;BmdVec3 n;std::int16_t bind;};struct UV{float u,v;};
         std::vector<V> vs(static_cast<std::size_t>(nv));std::vector<N> ns(static_cast<std::size_t>(nn));std::vector<UV> uvs(static_cast<std::size_t>(nt));
         for(auto&v:vs){std::int16_t pad;if(!r.read_s16(v.node)||!r.read_s16(pad)||!r.read_f32(v.p.x)||!r.read_f32(v.p.y)||!r.read_f32(v.p.z)||!finite(v.p))return{{},"Invalid BMD vertex data."};}
         for(auto&n:ns){std::int16_t pad;if(!r.read_s16(n.node)||!r.read_s16(pad)||!r.read_f32(n.n.x)||!r.read_f32(n.n.y)||!r.read_f32(n.n.z)||!r.read_s16(n.bind)||!r.read_s16(pad)||!finite(n.n))return{{},"Invalid BMD normal data."};}

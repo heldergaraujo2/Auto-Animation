@@ -75,8 +75,9 @@ bool MarkerEditor::create(MarkerType type, const animation::Vec3& position,
     marker.space = MarkerSpace::Object;
     marker.confidence = 1.0f;
     marker.required = required;
+    const std::string lookup_name = marker.name;
     if (!markers_->add_or_replace(std::move(marker))) return false;
-    const auto* created = markers_->find(type, marker.name);
+    const auto* created = markers_->find(type, lookup_name);
     if (created == nullptr) return false;
     active_type_ = type;
     active_name_ = created->name;

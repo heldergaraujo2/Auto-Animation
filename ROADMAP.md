@@ -1220,6 +1220,7 @@ A investigação externa foi incorporada sem copiar código incompatível para o
 - [x] Gerador procedural FlyIdle com loop, hover, asas e pernas assimétricas.
 - [x] Testes unitários para os recursos acima.
 - [x] Auditoria de licenças em docs/RESEARCH_INTEGRATION.md.
+- [x] Importer nativo BMD não criptografado, com geometry/skeleton/animation.
 
 ## Não incorporado diretamente
 

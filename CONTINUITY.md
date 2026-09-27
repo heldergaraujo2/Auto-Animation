@@ -389,6 +389,7 @@ A investigação externa solicitada foi concluída e registrada em docs/RESEARCH
 - [x] Gerador procedural FlyIdle: hover parado, loop fechado, asas alternadas e pernas assimétricas.
 - [x] Testes unitários para cada novo módulo.
 - [x] Auditoria de licenças e decisão de não incorporar componentes restritivos ao core.
+- [x] Importer BMD nativo para versões não criptografadas, com teste binário realista.
 
 ## Arquitetura atual
 - core: fundação/logging/version.
@@ -396,7 +397,7 @@ A investigação externa solicitada foi concluída e registrada em docs/RESEARCH
 - anatomy: marcadores persistíveis e validáveis.
 - rigging: skeleton editável + retarget inicial.
 - motion: geração procedural FlyIdle.
-- importer: Assimp para formatos suportados; BMD permanece adapter futuro.
+- importer: Assimp para formatos suportados + adapter BMD nativo não criptografado; versões BMD criptografadas 12/15 continuam pendentes.
 - viewer: SDL2/OpenGL, ainda sem edição de marcadores na malha.
 
 ## Validação pendente
@@ -405,4 +406,4 @@ A branch de integração contém código novo, mas a execução remota do CI ain
 ## Último marco de implementação
 Branch: integration/research-improvements
 Último commit: 7a95374459f60cecb6d23ba51d61d160c842047a
-Próxima ação: abrir PR para main e usar o CI como validação completa; corrigir qualquer erro antes de incorporar a branch.
+Próxima ação: aguardar o CI do PR #1; corrigir qualquer erro antes de incorporar a branch. Depois, concluir edição visual de marcadores.

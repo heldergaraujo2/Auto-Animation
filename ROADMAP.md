@@ -382,6 +382,8 @@ Anatomical markers permanecem na Fase 5. Auto-rigging permanece na Fase 7. Skinn
 
 # FASE 5 — SISTEMA DE MARCAÇÃO ANATÔMICA
 
+**Status: EM IMPLEMENTAÇÃO — núcleo concluído; edição visual ainda pendente**
+
 ## Objetivo
 
 Criar o equivalente conceitual à marcação de auto-rig.
@@ -1185,3 +1187,58 @@ O usuário deverá pensar:
 e não:
 
 "Como eu mesmo faço todos esses bones e keyframes?"
+
+
+---
+
+# INTEGRAÇÃO DE PESQUISA EXTERNA — MARCO 2026-09-27
+
+A investigação externa foi incorporada sem copiar código incompatível para o núcleo.
+
+## Referências aproveitadas
+
+- Automatic-Rigging / Pinocchio: princípios para futura geração automática de skeleton e skinning.
+- eely: arquitetura de blending, máscaras, additive layers, graphs e sincronização de fase.
+- GameAnimationProgramming: referência para IK, skinning avançado e otimização.
+- Animato: referência para a futura camada Natural Language → Animation Intent → Motion Plan.
+- MU Online BMD Viewer: referência prática para parser BMD, animações, attachments e conversão para GLTF.
+- GodotAnimationRetargeting: referência para mapas de bones, correção manual e bake de retarget.
+- NVIDIA SOMA Retargeter: referência de workflow para retargeting orientado por mapeamentos/constraints.
+- AniGen: referência conceitual para manter Shape/Skeleton/Skin coerentes também em criaturas não humanoides.
+- marrow: referência para batch evaluation, LOD e runtime sem alocações.
+
+## Implementado neste marco
+
+- [x] Sistema de marcadores humanoides e genéricos.
+- [x] Perfil de marcadores validável.
+- [x] Serialização/deserialização determinística de marcadores.
+- [x] Blending de poses.
+- [x] Blending mascarado.
+- [x] Additive pose.
+- [x] Mapeamento inicial de skeleton para retarget.
+- [x] Transferência de pose com escala de root.
+- [x] Gerador procedural FlyIdle com loop, hover, asas e pernas assimétricas.
+- [x] Gerador inicial de skeleton a partir de marcadores anatômicos.
+- [x] Testes unitários para os recursos acima.
+- [x] Auditoria de licenças em docs/RESEARCH_INTEGRATION.md.
+- [x] Importer nativo BMD não criptografado, com geometry/skeleton/animation.
+
+## Não incorporado diretamente
+
+- Pinocchio: biblioteca LGPL; mantida como referência.
+- CUBVH/instant-ngp dentro de AniGen: componentes com restrições de uso; excluídos.
+- Código TypeScript do BMD Viewer: mantido fora do núcleo C++; será usado como referência para adapter BMD.
+- Blender/bpy do Animato: não virou dependência do runtime.
+
+## Próximos marcos técnicos derivados da pesquisa
+
+1. Marcação diretamente na malha no viewer.
+2. Classificação estrutural baseada em marcadores + skeleton + geometria.
+3. Auto-rigging backend isolado.
+4. Skinning/deformation.
+5. IK/constraints.
+6. Animation Graph/state machine com o blending já disponível.
+7. Retarget completo com offsets, escala por cadeia e correção de pés.
+8. BMD/OZJ adapter.
+9. Batch/LOD.
+10. Animation Intent e backend de IA substituível.

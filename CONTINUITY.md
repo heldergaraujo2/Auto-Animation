@@ -27,7 +27,7 @@ O novo chat deverá:
 # STATUS GERAL
 
 Fase atual: 5 — Sistema de Marcação Anatômica
-Estado: NÃO INICIADA
+Estado: EM IMPLEMENTAÇÃO — núcleo de dados concluído; edição visual pendente
 Última fase concluída: 4 — Skeleton Inspector e Edição Manual
 Último marco: skeleton universal editável, inspeção de hierarquia, seleção, bind/local/world transforms, edição segura, mirror e overlay visual, validado no CI.
 
@@ -48,7 +48,7 @@ Estado real após a Fase 0:
 - O GitHub Actions não apresentou uma execução disponível no momento da verificação; portanto, a configuração do CI está presente, mas a execução remota ainda precisa ser observada quando houver um workflow run.
 
 Próximo objetivo funcional:
-criar o visualizador 3D inicial, mantendo o core independente do renderer.
+concluir a edição visual das marcações anatômicas no viewer e conectá-las ao futuro classificador/auto-rigger.
 
 # FASE 0 — FUNDAÇÃO
 Status: CONCLUÍDA
@@ -373,3 +373,38 @@ IMPORTAR ASSET
 → USAR NO GAME
 
 sem precisar executar manualmente todas as etapas técnicas que a ferramenta foi criada para automatizar.
+
+
+# MARCO DE PESQUISA E INTEGRAÇÃO — 2026-09-27
+
+A investigação externa solicitada foi concluída e registrada em docs/RESEARCH_INTEGRATION.md. Foram estudados Automatic-Rigging/Pinocchio, eely, GameAnimationProgramming, Animato, MU Online BMD Viewer, GodotAnimationRetargeting, NVIDIA SOMA Retargeter, AniGen e marrow.
+
+## Implementação efetiva
+- [x] Sistema universal de marcadores anatômicos humanoide/genérico.
+- [x] Validação de marcadores.
+- [x] Serialização/deserialização de perfis de marcação.
+- [x] Blending, máscaras e additive de poses.
+- [x] Mapeamento inicial de bones para retarget.
+- [x] Transferência de pose com escala de root.
+- [x] Gerador procedural FlyIdle: hover parado, loop fechado, asas alternadas e pernas assimétricas.
+- [x] Auto-rig inicial orientado por marcadores, incluindo humanoide e extensões de asas/cauda.
+- [x] Testes unitários para cada novo módulo.
+- [x] Auditoria de licenças e decisão de não incorporar componentes restritivos ao core.
+- [x] Importer BMD nativo para versões não criptografadas, com teste binário realista.
+
+## Arquitetura atual
+- core: fundação/logging/version.
+- animation: Transform/Curve/Clip/Sampling + blending/masking/additive.
+- anatomy: marcadores persistíveis e validáveis.
+- rigging: skeleton editável + retarget inicial.
+- motion: geração procedural FlyIdle.
+- importer: Assimp para formatos suportados + adapter BMD nativo não criptografado; versões BMD criptografadas 12/15 continuam pendentes.
+- viewer: SDL2/OpenGL, ainda sem edição de marcadores na malha.
+
+## Validação pendente
+A branch de integração contém código novo, mas a execução remota do CI ainda precisa confirmar build/CTest. Não marcar esta etapa como concluída antes do workflow.
+
+## Último marco de implementação
+Branch: integration/research-improvements
+Último commit: 7a95374459f60cecb6d23ba51d61d160c842047a
+Próxima ação: aguardar o CI final do PR #1; corrigir qualquer erro antes de incorporar a branch. Depois, concluir edição visual de marcadores.

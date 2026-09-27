@@ -1,6 +1,7 @@
 #include "auto_animation/viewer/Viewer.hpp"
 #include "auto_animation/Logger.hpp"
 #include "auto_animation/rigging/Skeleton.hpp"
+#include "auto_animation/anatomy/Markers.hpp"
 
 #include <SDL.h>
 #include <SDL_opengl.h>
@@ -106,6 +107,18 @@ void draw_demo_asset(double time_seconds) {
     glPopMatrix();
 }
 
+
+void draw_markers(const anatomy::MarkerSet& markers) {
+    glDisable(GL_LIGHTING);
+    glPointSize(8.0f);
+    glBegin(GL_POINTS);
+    for (const auto& marker : markers.markers) {
+        glVertex3f(marker.position.x, marker.position.y, marker.position.z);
+    }
+    glEnd();
+    glPointSize(1.0f);
+}
+
 void draw_skeleton(const rigging::Skeleton& skeleton) {
     glDisable(GL_LIGHTING);
     glLineWidth(3.0f);
@@ -139,6 +152,7 @@ struct Viewer::Impl {
     bool timeline_playing = true;
     double timeline_seconds = 0.0;
     const rigging::Skeleton* skeleton = nullptr;
+    const anatomy::MarkerSet* markers = nullptr;
 };
 
 Viewer::Viewer(ViewerConfig config)
@@ -209,6 +223,10 @@ bool Viewer::initialized() const noexcept {
 
 void Viewer::set_skeleton(const rigging::Skeleton* skeleton) {
     if (impl_ != nullptr) impl_->skeleton = skeleton;
+}
+
+void Viewer::set_markers(const anatomy::MarkerSet* markers) {
+    if (impl_ != nullptr) impl_->markers = markers;
 }
 
 void Viewer::request_close() {
@@ -312,6 +330,7 @@ void Viewer::run() {
         glColor3f(0.72f, 0.78f, 0.86f);
         draw_demo_asset(impl_->timeline_seconds);
         if (impl_->skeleton != nullptr) draw_skeleton(*impl_->skeleton);
+        if (impl_->markers != nullptr) draw_markers(*impl_->markers);
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         SDL_GL_SwapWindow(impl_->window);

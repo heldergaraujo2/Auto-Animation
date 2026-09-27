@@ -69,7 +69,7 @@ bool MarkerEditor::create(MarkerType type, const animation::Vec3& position,
     if (markers_ == nullptr) return false;
     AnatomicalMarker marker;
     marker.type = type;
-    marker.name = std::move(name);
+    marker.name = name.empty() ? marker_type_name(type) : std::move(name);
     marker.position = position;
     marker.normal = normalize_or_default(normal);
     marker.space = MarkerSpace::Object;

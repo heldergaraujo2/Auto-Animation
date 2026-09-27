@@ -2,11 +2,38 @@
 #include "auto_animation/importer/ImporterRegistry.hpp"
 
 #include <filesystem>
+#include <fstream>
+#include <vector>
+#include <cstdint>#include <array>
+#include <cstring>
+
 #include <iostream>
 #include <string_view>
 
 namespace {
 int failures = 0;
+void put_u8(std::vector<std::uint8_t>& b, std::uint8_t v){b.push_back(v);}
+void put_s16(std::vector<std::uint8_t>& b, std::int16_t v){b.push_back(static_cast<std::uint8_t>(v));b.push_back(static_cast<std::uint8_t>(v>>8));}
+void put_u16(std::vector<std::uint8_t>& b, std::uint16_t v){b.push_back(static_cast<std::uint8_t>(v));b.push_back(static_cast<std::uint8_t>(v>>8));}
+void put_f32(std::vector<std::uint8_t>& b, float v){std::uint32_t u=0;std::memcpy(&u,&v,4);for(int i=0;i<4;++i)b.push_back(static_cast<std::uint8_t>(u>>(i*8)));}
+void fixed(std::vector<std::uint8_t>& b,std::string_view s,std::size_t n){for(std::size_t i=0;i<n;++i)b.push_back(i<s.size()?static_cast<std::uint8_t>(s[i]):0);}
+std::filesystem::path make_test_bmd(){
+    std::vector<std::uint8_t> b={'B','M','D',11};
+    fixed(b,"TestBMD",32); put_u16(b,1);put_u16(b,2);put_u16(b,1);
+    put_s16(b,3);put_s16(b,3);put_s16(b,3);put_s16(b,1);put_s16(b,0);
+    for(auto p:std::vector<std::array<float,3>>{{{0,0,0}},{{1,0,0}},{{0,1,0}}}){put_s16(b,0);put_s16(b,0);put_f32(b,p[0]);put_f32(b,p[1]);put_f32(b,p[2]);}
+    for(int i=0;i<3;++i){put_s16(b,0);put_s16(b,0);put_f32(b,0);put_f32(b,0);put_f32(b,1);put_s16(b,0);put_s16(b,0);}
+    for(auto uv:std::vector<std::array<float,2>>{{{0,0}},{{1,0}},{{0,1}}}){put_f32(b,uv[0]);put_f32(b,uv[1]);}
+    std::array<std::int16_t,4> vi{0,1,2,0};
+    std::array<std::int16_t,4> ni{0,0,0,0};
+    std::array<std::int16_t,4> ti{0,1,2,0};
+    put_u8(b,3);put_u8(b,0);for(auto v:vi)put_s16(b,v);for(auto v:ni)put_s16(b,v);for(auto v:ti)put_s16(b,v);while(b.size()%64!=0)put_u8(b,0);
+    fixed(b,"texture.tga",32);
+    put_s16(b,2);put_u8(b,0);
+    for(std::string_view name:{"Root","Child"}){put_u8(b,0);fixed(b,name,32);put_s16(b,name=="Root"?-1:0);for(int k=0;k<2;++k){put_f32(b,0);put_f32(b,0);put_f32(b,0);}for(int k=0;k<2;++k){put_f32(b,0);put_f32(b,0);put_f32(b,0);}}
+    const auto path=std::filesystem::temp_directory_path()/"auto_animation_test.bmd";
+    std::ofstream out(path,std::ios::binary);out.write(reinterpret_cast<const char*>(b.data()),static_cast<std::streamsize>(b.size()));return path;
+}
 void expect(bool value, std::string_view message) {
     if (!value) {
         std::cerr << "FAIL: " << message << '\n';
@@ -32,7 +59,7 @@ int main(int argc, char** argv) {
     expect(registry.find_for(root / "missing.3ds") != nullptr, "3DS importer registered");
     expect(registry.find_for(root / "triangle.stl") != nullptr, "STL importer registered");
     expect(registry.find_for(root / "triangle.ply") != nullptr, "PLY importer registered");
-    expect(registry.find_for(root / "missing.bmd") == nullptr, "BMD deliberately requires a future proprietary importer");
+    expect(registry.find_for(root / "missing.bmd") != nullptr, "BMD importer registered");
 
     const auto obj = registry.import(root / "cube.obj");
     expect(static_cast<bool>(obj), "OBJ import succeeds");
@@ -69,6 +96,15 @@ int main(int argc, char** argv) {
 
     const auto ply = registry.import(root / "triangle.ply");
     expect(static_cast<bool>(ply), "PLY import succeeds");
+
+    const auto bmd_path = make_test_bmd();
+    const auto bmd = registry.import(bmd_path);
+    expect(static_cast<bool>(bmd), "native unencrypted BMD import succeeds");
+    expect(bmd.asset.has_geometry(), "BMD produces geometry");
+    expect(bmd.asset.has_skeleton(), "BMD produces skeleton");
+    expect(bmd.asset.has_animation(), "BMD produces animation");
+    if (bmd.asset.has_skeleton()) expect(bmd.asset.skeletons[0].find_bone("Child") == 1, "BMD hierarchy preserves child bone");
+    std::error_code remove_error; std::filesystem::remove(bmd_path, remove_error);
 
     const auto unsupported = registry.import(root / "unknown.xyz");
     expect(!unsupported, "unsupported extension is rejected");

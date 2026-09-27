@@ -410,6 +410,23 @@ Root, Pelvis, Spine, Chest, Neck, Head, Shoulder L/R, Elbow L/R, Wrist L/R, Hand
 
 Salvar perfil anatômico reproduzível e utilizável pelo auto-rigger.
 
+## Resultado da Fase 5
+
+- [x] MarkerSet universal humanoide/genérico.
+- [x] Validação de coordenadas, confiança, duplicidade e campos obrigatórios.
+- [x] Serialização/deserialização versionada.
+- [x] Persistência em arquivo com rejeição segura de perfis inválidos.
+- [x] MarkerEditor independente de UI para selecionar, criar, remover, mover, espelhar e ajustar marcadores.
+- [x] Viewer com modo de edição visual, seleção por proximidade, arraste 3D, criação, remoção e espelhamento.
+- [x] Atalhos para trocar tipo ativo e mover por teclado.
+- [x] Atalhos Ctrl+S/Ctrl+O para persistência do perfil.
+- [x] Demonstração --marker-editor.
+- [x] Testes unitários de MarkerEditor e persistência.
+- [x] Integração direta com o AutoRig existente.
+- [x] Documentação em docs/ANATOMY_MARKERS.md.
+
+A criação visual usa um plano 3D de referência enquanto a malha universal ainda não é renderizada no Viewer. A arquitetura mantém o ponto de troca preparado para raycast na superfície real quando o pipeline de Mesh for conectado.
+
 ---
 
 # FASE 6 — CLASSIFICAÇÃO ESTRUTURAL
@@ -1232,7 +1249,7 @@ A investigação externa foi incorporada sem copiar código incompatível para o
 
 ## Próximos marcos técnicos derivados da pesquisa
 
-1. Marcação diretamente na malha no viewer.
+1. [x] Marcação visual no Viewer, com edição persistível.
 2. Classificação estrutural baseada em marcadores + skeleton + geometria.
 3. Auto-rigging backend isolado.
 4. Skinning/deformation.
@@ -1268,3 +1285,14 @@ Próximas extensões:
 4. reconhecimento combinando nomes + hierarquia + marcadores + geometria;
 5. motion matching com janelas temporais e trajetória futura;
 6. integração visual dos marcadores e goals no Viewer.
+
+
+# MARCO TÉCNICO — FASE 5 CONCLUÍDA — 2026-09-27
+
+- [x] Núcleo anatômico validável.
+- [x] Editor de marcadores desacoplado da UI.
+- [x] Edição visual integrada ao Viewer.
+- [x] Persistência versionada em arquivo.
+- [x] Integração com auto-rigging.
+- [x] Testes unitários adicionados.
+- [ ] CI do SHA final desta rodada ainda precisa executar; a fase só deve ser considerada operacionalmente validada após Configure + Build + CTest.

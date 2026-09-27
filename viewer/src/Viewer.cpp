@@ -3,6 +3,7 @@
 #include "auto_animation/rigging/Skeleton.hpp"
 #include "auto_animation/anatomy/Markers.hpp"
 #include "auto_animation/anatomy/MarkerEditor.hpp"
+#include "auto_animation/anatomy/MarkerProfileIO.hpp"
 
 #include <SDL.h>
 #include <SDL_opengl.h>
@@ -303,6 +304,27 @@ void Viewer::set_editable_markers(anatomy::MarkerSet* markers) {
     }
 }
 
+bool Viewer::save_editable_markers(const std::string& path, std::string& error) const {
+    if (impl_ == nullptr || impl_->editable_markers == nullptr) {
+        error = "No editable marker set is attached.";
+        return false;
+    }
+    return anatomy::save_marker_profile(*impl_->editable_markers, path, error);
+}
+
+bool Viewer::load_editable_markers(const std::string& path, std::string& error) {
+    if (impl_ == nullptr || impl_->editable_markers == nullptr) {
+        error = "No editable marker set is attached.";
+        return false;
+    }
+    anatomy::MarkerSet loaded;
+    if (!anatomy::load_marker_profile(path, loaded, error)) return false;
+    *impl_->editable_markers = std::move(loaded);
+    impl_->marker_editor.attach(impl_->editable_markers);
+    impl_->markers = impl_->editable_markers;
+    return true;
+}
+
 void Viewer::request_close() {
     if (impl_ != nullptr) {
         impl_->running = false;
@@ -358,6 +380,22 @@ void Viewer::run() {
                     impl_->timeline_seconds = std::max(0.0, impl_->timeline_seconds - 1.0 / 30.0);
                 } else if (event.key.keysym.sym == SDLK_RIGHT) {
                     impl_->timeline_seconds += 1.0 / 30.0;
+                } else if (event.key.keysym.sym == SDLK_s &&
+                           (event.key.keysym.mod & KMOD_CTRL) != 0 &&
+                           impl_->marker_edit_mode) {
+                    std::string error;
+                    if (!save_editable_markers("markers.autoanim", error))
+                        log(LogLevel::Error, error);
+                    else
+                        log(LogLevel::Info, "Marker profile saved to markers.autoanim.");
+                } else if (event.key.keysym.sym == SDLK_o &&
+                           (event.key.keysym.mod & KMOD_CTRL) != 0 &&
+                           impl_->marker_edit_mode) {
+                    std::string error;
+                    if (!load_editable_markers("markers.autoanim", error))
+                        log(LogLevel::Error, error);
+                    else
+                        log(LogLevel::Info, "Marker profile loaded from markers.autoanim.");
                 } else if (event.key.keysym.sym == SDLK_f && impl_->editable_markers != nullptr) {
                     impl_->marker_edit_mode = !impl_->marker_edit_mode;
                     impl_->marker_dragging = false;

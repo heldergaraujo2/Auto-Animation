@@ -27,7 +27,7 @@ std::filesystem::path make_test_bmd(){
     std::array<std::int16_t,4> vi{0,1,2,0};
     std::array<std::int16_t,4> ni{0,0,0,0};
     std::array<std::int16_t,4> ti{0,1,2,0};
-    put_u8(b,3);put_u8(b,0);for(auto v:vi)put_s16(b,v);for(auto v:ni)put_s16(b,v);for(auto v:ti)put_s16(b,v);while(b.size()%64!=0)put_u8(b,0);
+    put_u8(b,3);put_u8(b,0);for(auto v:vi)put_s16(b,v);for(auto v:ni)put_s16(b,v);for(auto v:ti)put_s16(b,v);for(int i=0;i<38;++i)put_u8(b,0);
     fixed(b,"texture.tga",32);
     put_s16(b,2);put_u8(b,0);
     for(std::string_view name:{"Root","Child"}){put_u8(b,0);fixed(b,name,32);put_s16(b,name=="Root"?-1:0);for(int k=0;k<2;++k){put_f32(b,0);put_f32(b,0);put_f32(b,0);}for(int k=0;k<2;++k){put_f32(b,0);put_f32(b,0);put_f32(b,0);}}

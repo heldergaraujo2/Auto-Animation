@@ -435,3 +435,27 @@ A alteração deve ser considerada em andamento até o GitHub Actions validar Co
 
 ## Próximo passo
 Aguardar/corrigir o CI; depois conectar edição visual de marcadores, IK goals e skinning ao Viewer.
+
+
+# MARCO DE IMPLEMENTAÇÃO — RIGGING AVANÇADO FINAL DESTA RODADA — 2026-09-27
+
+## Estado
+Branch: integration/research-improvements
+Último commit: 4e758c8f1576be0451d65b103e64e162cfacb606
+PR aberto: #2
+
+## Entregas
+- [x] Automatic heat-like weights.
+- [x] LBS com transformação bind-pose → pose atual.
+- [x] DQS com delta de bind-pose e fallback seguro quando existe escala.
+- [x] FABRIK IK.
+- [x] Reconhecimento semântico de bones com normalização/aliases.
+- [x] MotionDatabase com features e busca nearest-neighbor.
+- [x] Testes unitários para todos os módulos novos.
+- [x] Roadmap e documentação atualizados.
+
+## Validação
+O CI existente possui Configure/Build/Test e anteriormente validou a base da branch. Porém, os commits desta rodada foram criados via integração GitHub e não geraram um novo workflow associado ao SHA final; o status GitHub do SHA permanece pending sem checks. Portanto esta rodada não deve ser declarada como CI-passed até que o workflow execute o commit final.
+
+## Próxima ação de validação
+Executar o CI do PR #2 sobre o SHA final. Se o workflow reportar erro, corrigir e repetir. Não marcar as fases 8/9/21 como concluídas somente pela existência dos módulos.

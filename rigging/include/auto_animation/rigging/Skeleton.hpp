@@ -50,6 +50,11 @@ struct Skeleton {
     bool set_parent(std::int32_t index, std::int32_t new_parent);
     bool remove_bone(std::int32_t index, RemovePolicy policy = RemovePolicy::RejectWithChildren);
     bool set_group(std::int32_t index, std::string group);
+    bool set_pivot(std::int32_t index, const animation::Vec3& pivot);
+    bool set_editable(std::int32_t index, bool editable);
+    bool select_bone(std::int32_t index);
+    [[nodiscard]] std::vector<std::int32_t> children_of(std::int32_t index) const;
+    [[nodiscard]] std::vector<std::int32_t> roots() const;
     bool set_pose_transform(std::int32_t index, const animation::Transform& transform);
     bool reset_pose_to_bind(std::int32_t index);
     bool mirror_pose(std::int32_t index, MirrorAxis axis);

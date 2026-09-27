@@ -23,11 +23,14 @@ add_library(auto_animation_animation
 add_library(auto_animation_rigging
     rigging/src/Skeleton.cpp
     rigging/src/Retargeting.cpp
+    rigging/src/AutoRig.cpp
 )
 target_include_directories(auto_animation_rigging PUBLIC
     ${CMAKE_CURRENT_SOURCE_DIR}/rigging/include
 )
 target_link_libraries(auto_animation_rigging PUBLIC auto_animation_animation)
+# AutoRig.cpp consumes the anatomy marker model; the target is declared later in this file.
+
 target_compile_features(auto_animation_rigging PUBLIC cxx_std_20)
 if(MSVC)
     target_compile_options(auto_animation_rigging PRIVATE /W4 /permissive-)
@@ -59,6 +62,7 @@ add_library(auto_animation_anatomy
 )
 target_include_directories(auto_animation_anatomy PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/anatomy/include)
 target_link_libraries(auto_animation_anatomy PUBLIC auto_animation_animation)
+target_link_libraries(auto_animation_rigging PUBLIC auto_animation_anatomy)
 target_compile_features(auto_animation_anatomy PUBLIC cxx_std_20)
 if(MSVC)
     target_compile_options(auto_animation_anatomy PRIVATE /W4 /permissive-)
@@ -189,6 +193,10 @@ if(AUTO_ANIMATION_BUILD_TESTS)
     add_executable(auto-animation-rigging-tests tests/unit/test_skeleton.cpp)
     target_link_libraries(auto-animation-rigging-tests PRIVATE auto_animation_rigging)
     add_test(NAME rigging COMMAND auto-animation-rigging-tests)
+
+    add_executable(auto-animation-autorig-tests tests/unit/test_autorig.cpp)
+    target_link_libraries(auto-animation-autorig-tests PRIVATE auto_animation_rigging auto_animation_anatomy)
+    add_test(NAME autorig COMMAND auto-animation-autorig-tests)
 
     add_executable(auto-animation-retargeting-tests tests/unit/test_retargeting.cpp)
     target_link_libraries(auto-animation-retargeting-tests PRIVATE auto_animation_rigging)

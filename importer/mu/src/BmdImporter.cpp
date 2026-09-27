@@ -34,7 +34,7 @@ struct BmdBone { std::string name; std::int16_t parent=-1; bool dummy=false; std
 
 constexpr std::size_t kMaxMeshes=4096,kMaxBones=4096,kMaxActions=4096,kMaxElements=1000000,kMaxKeys=100000;
 bool finite(BmdVec3 v){return std::isfinite(v.x)&&std::isfinite(v.y)&&std::isfinite(v.z);}
-animation::Quat euler_quat(Vec3 e) {
+animation::Quat euler_quat(BmdVec3 e) {
     const float hx=e.x*0.5f,hy=e.y*0.5f,hz=e.z*0.5f;
     const float sx=std::sin(hx),cx=std::cos(hx),sy=std::sin(hy),cy=std::cos(hy),sz=std::sin(hz),cz=std::cos(hz);
     return animation::normalize({sx*cy*cz-cx*sy*sz,cx*sy*cz+sx*cy*sz,cx*cy*sz-sx*sy*cz,cx*cy*cz+sx*sy*sz});

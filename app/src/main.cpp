@@ -2,7 +2,6 @@
 #include "auto_animation/Version.hpp"
 #include "auto_animation/viewer/Viewer.hpp"
 #include "auto_animation/anatomy/Markers.hpp"
-#include "auto_animation/anatomy/MarkerProfileIO.hpp"
 
 #include <iostream>
 #include <string_view>

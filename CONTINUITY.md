@@ -387,6 +387,7 @@ A investigação externa solicitada foi concluída e registrada em docs/RESEARCH
 - [x] Mapeamento inicial de bones para retarget.
 - [x] Transferência de pose com escala de root.
 - [x] Gerador procedural FlyIdle: hover parado, loop fechado, asas alternadas e pernas assimétricas.
+- [x] Auto-rig inicial orientado por marcadores, incluindo humanoide e extensões de asas/cauda.
 - [x] Testes unitários para cada novo módulo.
 - [x] Auditoria de licenças e decisão de não incorporar componentes restritivos ao core.
 - [x] Importer BMD nativo para versões não criptografadas, com teste binário realista.
@@ -406,4 +407,4 @@ A branch de integração contém código novo, mas a execução remota do CI ain
 ## Último marco de implementação
 Branch: integration/research-improvements
 Último commit: 7a95374459f60cecb6d23ba51d61d160c842047a
-Próxima ação: aguardar o CI do PR #1; corrigir qualquer erro antes de incorporar a branch. Depois, concluir edição visual de marcadores.
+Próxima ação: aguardar o CI final do PR #1; corrigir qualquer erro antes de incorporar a branch. Depois, concluir edição visual de marcadores.

@@ -4,7 +4,9 @@
 #include <filesystem>
 #include <fstream>
 #include <vector>
-#include <cstdint>#include <array>
+#include <cstdint>
+#include <array>
+#include <cstring>
 #include <cstring>
 
 #include <iostream>

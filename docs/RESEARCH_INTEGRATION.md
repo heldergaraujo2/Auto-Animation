@@ -36,11 +36,12 @@ This document records external projects investigated for Auto-Animation and what
 The research pass produced three concrete reusable foundations:
 
 1. Anatomical marker data that can be edited, validated, and serialized before auto-rigging.
-2. Pose blending, masking, and additive animation operations suitable for animation graphs and procedural generation.
-3. Initial skeleton name mapping and pose transfer for future retargeting.
+2. Marker-driven initial skeleton generation, including non-humanoid wing/tail extensions.
+3. Pose blending, masking, and additive animation operations suitable for animation graphs and procedural generation.
+4. Initial skeleton name mapping and pose transfer for future retargeting.
 
 The remaining high-value external integrations are deliberately scheduled behind adapters:
-- BMD importer.
+- BMD importer (native unencrypted versions now implemented; encrypted versions remain isolated).
 - full automatic rigging backend.
 - advanced IK/constraints.
 - AI animation backend.

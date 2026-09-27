@@ -1218,6 +1218,7 @@ A investigação externa foi incorporada sem copiar código incompatível para o
 - [x] Mapeamento inicial de skeleton para retarget.
 - [x] Transferência de pose com escala de root.
 - [x] Gerador procedural FlyIdle com loop, hover, asas e pernas assimétricas.
+- [x] Gerador inicial de skeleton a partir de marcadores anatômicos.
 - [x] Testes unitários para os recursos acima.
 - [x] Auditoria de licenças em docs/RESEARCH_INTEGRATION.md.
 - [x] Importer nativo BMD não criptografado, com geometry/skeleton/animation.

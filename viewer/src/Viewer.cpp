@@ -344,6 +344,16 @@ void Viewer::run() {
                     impl_->timeline_playing = !impl_->timeline_playing;
                 } else if (event.key.keysym.sym == SDLK_w) {
                     impl_->wireframe = !impl_->wireframe;
+                } else if (impl_->marker_edit_mode && impl_->marker_editor.has_selection() &&
+                           (event.key.keysym.sym == SDLK_LEFT || event.key.keysym.sym == SDLK_RIGHT ||
+                            event.key.keysym.sym == SDLK_UP || event.key.keysym.sym == SDLK_DOWN)) {
+                    const float step = (event.key.keysym.mod & KMOD_SHIFT) != 0 ? 0.25f : 0.05f;
+                    animation::Vec3 delta{};
+                    if (event.key.keysym.sym == SDLK_UP) delta.y += step;
+                    else if (event.key.keysym.sym == SDLK_DOWN) delta.y -= step;
+                    else if (event.key.keysym.sym == SDLK_LEFT) delta.x -= step;
+                    else if (event.key.keysym.sym == SDLK_RIGHT) delta.x += step;
+                    impl_->marker_editor.nudge_selected(delta);
                 } else if (event.key.keysym.sym == SDLK_LEFT) {
                     impl_->timeline_seconds = std::max(0.0, impl_->timeline_seconds - 1.0 / 30.0);
                 } else if (event.key.keysym.sym == SDLK_RIGHT) {
@@ -366,20 +376,12 @@ void Viewer::run() {
                     const auto max_type = static_cast<std::uint16_t>(anatomy::MarkerType::Custom);
                     impl_->marker_editor.set_active_type(
                         static_cast<anatomy::MarkerType>(next >= max_type ? 0 : next + 1));
-                } else if (impl_->marker_edit_mode && impl_->marker_editor.has_selection()) {
-                    const float step = (event.key.keysym.mod & KMOD_SHIFT) != 0 ? 0.25f : 0.05f;
-                    animation::Vec3 delta{};
-                    if (event.key.keysym.sym == SDLK_UP) delta.y += step;
-                    else if (event.key.keysym.sym == SDLK_DOWN) delta.y -= step;
-                    else if (event.key.keysym.sym == SDLK_LEFT) delta.x -= step;
-                    else if (event.key.keysym.sym == SDLK_RIGHT) delta.x += step;
-                    if (delta.x != 0.0f || delta.y != 0.0f || delta.z != 0.0f)
-                        impl_->marker_editor.nudge_selected(delta);
+
                 }
             } else if (event.type == SDL_MOUSEBUTTONDOWN &&
                        event.button.button == SDL_BUTTON_LEFT) {
                 const bool edit = impl_->marker_edit_mode && impl_->editable_markers != nullptr;
-                const bool shift = (event.button.state & SDL_BUTTON_LMASK) != 0;
+                const bool shift = (SDL_GetModState() & KMOD_SHIFT) != 0;
                 if (edit) {
                     std::size_t nearest = static_cast<std::size_t>(-1);
                     float nearest_distance = 16.0f;

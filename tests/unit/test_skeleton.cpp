@@ -26,12 +26,12 @@ int main(){
     expect(s.find_bone("Arm_L")==arm,"renamed bone is discoverable");
     expect(!s.rename_bone(hand,"Arm_L"),"duplicate bone names are rejected");
 
+    const auto world_before_reparent=s.world_transform(hand,true);
+    expect(near(world_before_reparent.translation.x,2.0f),"bind world transform composes hierarchy");
+
     expect(s.set_parent(hand,root),"bone can be reparented");
     expect(s.bones[hand].parent_index==root,"reparent is applied");
     expect(!s.set_parent(root,hand),"cycles are rejected");
-
-    const auto world=s.world_transform(hand,true);
-    expect(near(world.translation.x,2.0f),"bind world transform composes hierarchy");
 
     Transform pose{{2,0,0},{0,0,0,1},{1,1,1}};
     expect(s.set_pose_transform(arm,pose),"pose can be edited");
@@ -45,6 +45,7 @@ int main(){
     expect(near(s.bones[arm].local_pose.translation.x,-1.0f),"mirror changes selected axis");
     expect(s.mirror_bone_to_sibling(arm,hand,MirrorAxis::X),"pose can be mirrored to another bone");
 
+    expect(s.set_parent(hand,arm),"child restored for removal test");
     expect(!s.remove_bone(arm,RemovePolicy::RejectWithChildren),"removal with children can be rejected");
     expect(s.remove_bone(arm,RemovePolicy::ReparentChildren),"controlled removal reparents children");
     expect(s.bones.size()==2,"removed bone is erased");

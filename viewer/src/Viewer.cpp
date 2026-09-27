@@ -2,6 +2,7 @@
 #include "auto_animation/Logger.hpp"
 #include "auto_animation/rigging/Skeleton.hpp"
 #include "auto_animation/anatomy/Markers.hpp"
+#include "auto_animation/anatomy/MarkerEditor.hpp"
 
 #include <SDL.h>
 #include <SDL_opengl.h>
@@ -108,15 +109,76 @@ void draw_demo_asset(double time_seconds) {
 }
 
 
-void draw_markers(const anatomy::MarkerSet& markers) {
+void draw_markers(const anatomy::MarkerSet& markers, std::size_t selected_index) {
     glDisable(GL_LIGHTING);
-    glPointSize(8.0f);
+    glPointSize(9.0f);
     glBegin(GL_POINTS);
-    for (const auto& marker : markers.markers) {
+    for (std::size_t i = 0; i < markers.markers.size(); ++i) {
+        const auto& marker = markers.markers[i];
+        if (i == selected_index) glColor3f(1.0f, 0.75f, 0.10f);
+        else glColor3f(0.20f, 0.95f, 0.55f);
         glVertex3f(marker.position.x, marker.position.y, marker.position.z);
     }
     glEnd();
     glPointSize(1.0f);
+}
+
+animation::Vec3 rotate_inverse(const animation::Vec3& v, float yaw_degrees, float pitch_degrees) {
+    const float yaw = -yaw_degrees * kPi / 180.0f;
+    const float pitch = -pitch_degrees * kPi / 180.0f;
+    const float cx = std::cos(pitch), sx = std::sin(pitch);
+    const float cy = std::cos(yaw), sy = std::sin(yaw);
+    const animation::Vec3 rx{v.x, cx * v.y - sx * v.z, sx * v.y + cx * v.z};
+    return {cy * rx.x + sy * rx.z, rx.y, -sy * rx.x + cy * rx.z};
+}
+
+animation::Vec3 camera_position(float yaw_degrees, float pitch_degrees, float distance) {
+    return rotate_inverse({0.0f, 1.5f, distance}, yaw_degrees, pitch_degrees);
+}
+
+bool screen_to_plane(int mouse_x, int mouse_y, int width, int height,
+                     float yaw_degrees, float pitch_degrees, float distance,
+                     float plane_y, animation::Vec3& out) {
+    if (width <= 0 || height <= 0) return false;
+    const float aspect = static_cast<float>(width) / static_cast<float>(height);
+    const float tan_half = std::tan(55.0f * kPi / 360.0f);
+    const float nx = (2.0f * static_cast<float>(mouse_x) / static_cast<float>(width) - 1.0f);
+    const float ny = (1.0f - 2.0f * static_cast<float>(mouse_y) / static_cast<float>(height));
+    const animation::Vec3 camera_dir{
+        nx * aspect * tan_half,
+        ny * tan_half,
+        -1.0f
+    };
+    const animation::Vec3 origin = camera_position(yaw_degrees, pitch_degrees, distance);
+    const animation::Vec3 direction = rotate_inverse(camera_dir, yaw_degrees, pitch_degrees);
+    if (std::abs(direction.y) < 1e-6f) return false;
+    const float t = (plane_y - origin.y) / direction.y;
+    if (t < 0.0f) return false;
+    out = {origin.x + direction.x * t, plane_y, origin.z + direction.z * t};
+    return std::isfinite(out.x) && std::isfinite(out.y) && std::isfinite(out.z);
+}
+
+bool project_point(const animation::Vec3& world, int width, int height,
+                   float yaw_degrees, float pitch_degrees, float distance,
+                   float& screen_x, float& screen_y) {
+    const auto camera = camera_position(yaw_degrees, pitch_degrees, distance);
+    const auto relative = animation::Vec3{
+        world.x - camera.x, world.y - camera.y, world.z - camera.z
+    };
+    const float yaw = yaw_degrees * kPi / 180.0f;
+    const float pitch = pitch_degrees * kPi / 180.0f;
+    const float cy = std::cos(yaw), sy = std::sin(yaw);
+    const animation::Vec3 ry{cy * relative.x + sy * relative.z, relative.y, -sy * relative.x + cy * relative.z};
+    const float cx = std::cos(pitch), sx = std::sin(pitch);
+    const float view_x = ry.x;
+    const float view_y = cx * ry.y - sx * ry.z;
+    const float view_z = sx * ry.y + cx * ry.z;
+    if (view_z >= -0.1f) return false;
+    const float aspect = static_cast<float>(width) / static_cast<float>(std::max(1, height));
+    const float tan_half = std::tan(55.0f * kPi / 360.0f);
+    screen_x = static_cast<float>(width) * 0.5f * (1.0f + view_x / (-view_z * tan_half * aspect));
+    screen_y = static_cast<float>(height) * 0.5f * (1.0f - view_y / (-view_z * tan_half));
+    return std::isfinite(screen_x) && std::isfinite(screen_y);
 }
 
 void draw_skeleton(const rigging::Skeleton& skeleton) {
@@ -153,6 +215,10 @@ struct Viewer::Impl {
     double timeline_seconds = 0.0;
     const rigging::Skeleton* skeleton = nullptr;
     const anatomy::MarkerSet* markers = nullptr;
+    anatomy::MarkerSet* editable_markers = nullptr;
+    anatomy::MarkerEditor marker_editor;
+    bool marker_edit_mode = false;
+    bool marker_dragging = false;
 };
 
 Viewer::Viewer(ViewerConfig config)
@@ -229,6 +295,14 @@ void Viewer::set_markers(const anatomy::MarkerSet* markers) {
     if (impl_ != nullptr) impl_->markers = markers;
 }
 
+void Viewer::set_editable_markers(anatomy::MarkerSet* markers) {
+    if (impl_ != nullptr) {
+        impl_->editable_markers = markers;
+        impl_->markers = markers;
+        impl_->marker_editor.attach(markers);
+    }
+}
+
 void Viewer::request_close() {
     if (impl_ != nullptr) {
         impl_->running = false;
@@ -274,15 +348,88 @@ void Viewer::run() {
                     impl_->timeline_seconds = std::max(0.0, impl_->timeline_seconds - 1.0 / 30.0);
                 } else if (event.key.keysym.sym == SDLK_RIGHT) {
                     impl_->timeline_seconds += 1.0 / 30.0;
+                } else if (event.key.keysym.sym == SDLK_f && impl_->editable_markers != nullptr) {
+                    impl_->marker_edit_mode = !impl_->marker_edit_mode;
+                    impl_->marker_dragging = false;
+                } else if (event.key.keysym.sym == SDLK_DELETE && impl_->marker_edit_mode) {
+                    impl_->marker_editor.remove_selected();
+                } else if (event.key.keysym.sym == SDLK_m && impl_->marker_edit_mode) {
+                    impl_->marker_editor.mirror_selected();
+                } else if (event.key.keysym.sym == SDLK_a && impl_->marker_edit_mode) {
+                    impl_->marker_editor.mirror_all();
+                } else if (event.key.keysym.sym == SDLK_LEFTBRACKET && impl_->marker_edit_mode) {
+                    const auto next = static_cast<std::uint16_t>(impl_->marker_editor.active_type());
+                    impl_->marker_editor.set_active_type(
+                        static_cast<anatomy::MarkerType>(next == 0 ? static_cast<std::uint16_t>(anatomy::MarkerType::Custom) : next - 1));
+                } else if (event.key.keysym.sym == SDLK_RIGHTBRACKET && impl_->marker_edit_mode) {
+                    const auto next = static_cast<std::uint16_t>(impl_->marker_editor.active_type());
+                    const auto max_type = static_cast<std::uint16_t>(anatomy::MarkerType::Custom);
+                    impl_->marker_editor.set_active_type(
+                        static_cast<anatomy::MarkerType>(next >= max_type ? 0 : next + 1));
+                } else if (impl_->marker_edit_mode && impl_->marker_editor.has_selection()) {
+                    const float step = (event.key.keysym.mod & KMOD_SHIFT) != 0 ? 0.25f : 0.05f;
+                    animation::Vec3 delta{};
+                    if (event.key.keysym.sym == SDLK_UP) delta.y += step;
+                    else if (event.key.keysym.sym == SDLK_DOWN) delta.y -= step;
+                    else if (event.key.keysym.sym == SDLK_LEFT) delta.x -= step;
+                    else if (event.key.keysym.sym == SDLK_RIGHT) delta.x += step;
+                    if (delta.x != 0.0f || delta.y != 0.0f || delta.z != 0.0f)
+                        impl_->marker_editor.nudge_selected(delta);
                 }
             } else if (event.type == SDL_MOUSEBUTTONDOWN &&
                        event.button.button == SDL_BUTTON_LEFT) {
-                impl_->dragging = true;
-                impl_->last_mouse_x = event.button.x;
-                impl_->last_mouse_y = event.button.y;
+                const bool edit = impl_->marker_edit_mode && impl_->editable_markers != nullptr;
+                const bool shift = (event.button.state & SDL_BUTTON_LMASK) != 0;
+                if (edit) {
+                    std::size_t nearest = static_cast<std::size_t>(-1);
+                    float nearest_distance = 16.0f;
+                    for (std::size_t i = 0; i < impl_->editable_markers->markers.size(); ++i) {
+                        float sx = 0.0f, sy = 0.0f;
+                        if (!project_point(impl_->editable_markers->markers[i].position,
+                                           config_.width, config_.height,
+                                           impl_->yaw, impl_->pitch, impl_->distance, sx, sy)) continue;
+                        const float dx = sx - static_cast<float>(event.button.x);
+                        const float dy = sy - static_cast<float>(event.button.y);
+                        const float d = std::sqrt(dx * dx + dy * dy);
+                        if (d < nearest_distance) { nearest_distance = d; nearest = i; }
+                    }
+                    if (nearest != static_cast<std::size_t>(-1)) {
+                        const auto& m = impl_->editable_markers->markers[nearest];
+                        impl_->marker_editor.select(m.type, m.name);
+                        impl_->marker_dragging = true;
+                        impl_->last_mouse_x = event.button.x;
+                        impl_->last_mouse_y = event.button.y;
+                    } else if (shift) {
+                        animation::Vec3 position{};
+                        if (screen_to_plane(event.button.x, event.button.y, config_.width, config_.height,
+                                            impl_->yaw, impl_->pitch, impl_->distance, 0.0f, position)) {
+                            const auto type = impl_->marker_editor.active_type();
+                            impl_->marker_editor.create(type, position,
+                                                        {0.0f, 1.0f, 0.0f},
+                                                        impl_->marker_editor.active_name());
+                            impl_->marker_dragging = true;
+                        }
+                    }
+                } else {
+                    impl_->dragging = true;
+                    impl_->last_mouse_x = event.button.x;
+                    impl_->last_mouse_y = event.button.y;
+                }
             } else if (event.type == SDL_MOUSEBUTTONUP &&
                        event.button.button == SDL_BUTTON_LEFT) {
                 impl_->dragging = false;
+                impl_->marker_dragging = false;
+            } else if (event.type == SDL_MOUSEMOTION && impl_->marker_dragging &&
+                       impl_->editable_markers != nullptr) {
+                const auto* selected = impl_->marker_editor.selected();
+                if (selected != nullptr) {
+                    animation::Vec3 position{};
+                    if (screen_to_plane(event.motion.x, event.motion.y, config_.width, config_.height,
+                                        impl_->yaw, impl_->pitch, impl_->distance,
+                                        selected->position.y, position)) {
+                        impl_->marker_editor.move_selected(position);
+                    }
+                }
             } else if (event.type == SDL_MOUSEMOTION && impl_->dragging) {
                 const int dx = event.motion.x - impl_->last_mouse_x;
                 const int dy = event.motion.y - impl_->last_mouse_y;
@@ -330,7 +477,10 @@ void Viewer::run() {
         glColor3f(0.72f, 0.78f, 0.86f);
         draw_demo_asset(impl_->timeline_seconds);
         if (impl_->skeleton != nullptr) draw_skeleton(*impl_->skeleton);
-        if (impl_->markers != nullptr) draw_markers(*impl_->markers);
+        if (impl_->markers != nullptr)
+            draw_markers(*impl_->markers,
+                         impl_->marker_editor.has_selection() ? impl_->marker_editor.selected_index()
+                                                               : static_cast<std::size_t>(-1));
 
         glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
         SDL_GL_SwapWindow(impl_->window);
@@ -338,9 +488,10 @@ void Viewer::run() {
         if (stats_.frames % 30 == 0) {
             char title[256];
             std::snprintf(title, sizeof(title),
-                          "%s | %.1f FPS | %s | Space: Play/Pause | W: Wireframe",
+                          "%s | %.1f FPS | %s | Space: Play/Pause | W: Wireframe%s",
                           config_.title.c_str(), stats_.fps,
-                          impl_->wireframe ? "Wireframe" : "Solid");
+                          impl_->wireframe ? "Wireframe" : "Solid",
+                          impl_->marker_edit_mode ? " | F: Marker Edit | Shift+Click: Add | Del: Remove" : "");
             SDL_SetWindowTitle(impl_->window, title);
         }
     }

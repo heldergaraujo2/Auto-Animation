@@ -40,6 +40,15 @@ int main(){
 
     expect(s.set_group(arm,"UpperBody"),"bone groups can be assigned");
     expect(s.bones[arm].group=="UpperBody","bone group persists");
+    expect(s.set_pivot(arm,{0.1f,0.2f,0.3f}),"bone pivot can be edited");
+    expect(near(s.bones[arm].pivot.z,0.3f),"bone pivot persists");
+    expect(s.set_editable(hand,false),"bone editability can be controlled");
+    expect(!s.set_pose_transform(hand,{{3,0,0},{},{1,1,1}}),"locked bone rejects pose edits");
+    expect(s.set_editable(hand,true),"bone can be unlocked");
+    expect(s.select_bone(arm)&&s.selected_bone==arm,"bone selection works");
+    expect(s.select_bone(-1)&&s.selected_bone==-1,"selection can be cleared");
+    expect(s.roots().size()==1&&s.roots()[0]==root,"root inspection works");
+    expect(s.children_of(root).size()==2,"child inspection works");
 
     expect(s.mirror_pose(arm,MirrorAxis::X),"bone pose can be mirrored");
     expect(near(s.bones[arm].local_pose.translation.x,-1.0f),"mirror changes selected axis");

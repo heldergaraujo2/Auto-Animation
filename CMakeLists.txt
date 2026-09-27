@@ -102,10 +102,12 @@ if(AUTO_ANIMATION_BUILD_IMPORTERS)
         importer/core/src/ImporterRegistry.cpp
         importer/core/src/DefaultRegistry.cpp
         importer/assimp/src/AssimpImporter.cpp
+        importer/mu/src/BmdImporter.cpp
     )
     target_include_directories(auto_animation_importer PUBLIC
         ${CMAKE_CURRENT_SOURCE_DIR}/importer/core/include
         ${CMAKE_CURRENT_SOURCE_DIR}/importer/assimp/include
+        ${CMAKE_CURRENT_SOURCE_DIR}/importer/mu/include
     )
     if(TARGET assimp::assimp)
         target_link_libraries(auto_animation_importer PUBLIC auto_animation_core auto_animation_animation auto_animation_rigging assimp::assimp)

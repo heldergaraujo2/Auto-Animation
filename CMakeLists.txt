@@ -62,6 +62,7 @@ endif()
 
 add_library(auto_animation_anatomy
     anatomy/src/Markers.cpp
+    anatomy/src/MarkerEditor.cpp
 )
 target_include_directories(auto_animation_anatomy PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/anatomy/include)
 target_link_libraries(auto_animation_anatomy PUBLIC auto_animation_animation)
@@ -199,6 +200,10 @@ if(AUTO_ANIMATION_BUILD_TESTS)
     add_executable(auto-animation-anatomy-tests tests/unit/test_anatomy.cpp)
     target_link_libraries(auto-animation-anatomy-tests PRIVATE auto_animation_anatomy)
     add_test(NAME anatomy COMMAND auto-animation-anatomy-tests)
+
+    add_executable(auto-animation-marker-editor-tests tests/unit/test_marker_editor.cpp)
+    target_link_libraries(auto-animation-marker-editor-tests PRIVATE auto_animation_anatomy)
+    add_test(NAME marker-editor COMMAND auto-animation-marker-editor-tests)
 
     add_executable(auto-animation-blending-tests tests/unit/test_blending.cpp)
     target_link_libraries(auto-animation-blending-tests PRIVATE auto_animation_animation)

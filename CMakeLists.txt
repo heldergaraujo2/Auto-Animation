@@ -147,7 +147,7 @@ if(AUTO_ANIMATION_BUILD_VIEWER)
         viewer/src/Viewer.cpp
     )
     target_include_directories(auto_animation_viewer PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/viewer/include)
-    target_link_libraries(auto_animation_viewer PUBLIC auto_animation_core auto_animation_rigging SDL2::SDL2 OpenGL::GL)
+    target_link_libraries(auto_animation_viewer PUBLIC auto_animation_core auto_animation_rigging auto_animation_anatomy SDL2::SDL2 OpenGL::GL)
     target_compile_features(auto_animation_viewer PUBLIC cxx_std_20)
 
     if(MSVC)

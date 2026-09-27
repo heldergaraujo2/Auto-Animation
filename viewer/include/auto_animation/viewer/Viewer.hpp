@@ -2,7 +2,7 @@
 
 #include <cstdint>
 
-namespace auto_animation::rigging { struct Skeleton; }
+namespace auto_animation::anatomy { struct MarkerSet; }
 
 namespace auto_animation::rigging { struct Skeleton; }
 #include <string>
@@ -35,6 +35,7 @@ public:
     void run_for_frames(std::uint64_t frame_count);
     void request_close();
     void set_skeleton(const rigging::Skeleton* skeleton);
+    void set_markers(const anatomy::MarkerSet* markers);
 
     [[nodiscard]] bool initialized() const noexcept;
     [[nodiscard]] const ViewerStats& stats() const noexcept;

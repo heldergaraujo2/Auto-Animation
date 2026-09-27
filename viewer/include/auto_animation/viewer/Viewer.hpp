@@ -36,6 +36,7 @@ public:
     void request_close();
     void set_skeleton(const rigging::Skeleton* skeleton);
     void set_markers(const anatomy::MarkerSet* markers);
+    void set_editable_markers(anatomy::MarkerSet* markers);
 
     [[nodiscard]] bool initialized() const noexcept;
     [[nodiscard]] const ViewerStats& stats() const noexcept;

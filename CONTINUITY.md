@@ -507,3 +507,14 @@ Fase 6 — Classificação Estrutural:
 - Custom Creature
 
 O classificador deverá combinar marcadores, skeleton existente e evidências geométricas quando disponíveis, sem forçar anatomia humanoide.
+
+
+# ATUALIZAÇÃO DE VALIDAÇÃO — 2026-09-27
+
+- Branch reconstruída sobre main para eliminar a divergência histórica que mantinha o PR em conflito.
+- PR ativo: #3.
+- O workflow CI recebeu o gatilho manual workflow_dispatch.
+- O SHA de implementação anterior foi rebaseado para o commit efc2852ba03bda5850dcb972a5c029aaa865ee13; depois o CI foi atualizado para permitir execução manual.
+- Estado: implementação da Fase 5 concluída; validação Configure/Build/CTest ainda não executada no ambiente desta sessão.
+- Não declarar CI PASS até existir um workflow concluído associado ao estado final.
+- Próxima fase permanece Fase 6 — Classificação Estrutural.

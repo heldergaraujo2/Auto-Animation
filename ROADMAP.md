@@ -326,28 +326,57 @@ Uma animação pode ser criada, validada, amostrada e reproduzida internamente s
 
 # FASE 4 — SKELETON INSPECTOR E EDIÇÃO MANUAL
 
+**Status: CONCLUÍDA**
+
 ## Objetivo
 
-Trabalhar com assets que já possuem skeleton.
+Trabalhar com assets que já possuem skeleton, permitindo inspeção e edição manual segura sem acoplar o núcleo ao viewer.
 
-## Recursos
+## Implementação
 
-- Tree hierarchy.
-- Renomear bone.
-- Reparent.
-- Criar bone.
-- Remover bone.
-- Orientação.
-- Pivot.
-- Bind pose.
-- Mirror.
-- Symmetry.
-- Bone groups.
-- Markers.
+- [x] Modelo universal de skeleton independente de UI/renderer.
+- [x] Tree hierarchy via roots/children.
+- [x] Busca por índice e nome.
+- [x] Seleção de bone e limpeza de seleção.
+- [x] Criar bone.
+- [x] Renomear bone com proteção contra nomes duplicados.
+- [x] Reparent com proteção contra ciclos.
+- [x] Remover bone com política explícita: rejeitar filhos ou reparentar filhos.
+- [x] Bind/rest pose.
+- [x] Edição de local pose.
+- [x] Transformação local → global.
+- [x] Pivot.
+- [x] Bloqueio/desbloqueio de edição.
+- [x] Groups de bones.
+- [x] Mirror de pose e mirror entre bones.
+- [x] Preservação da inverse bind matrix importada.
+- [x] Validação de hierarquia, nomes, índices e transforms finitos.
+- [x] Viewer capaz de receber skeleton e desenhar overlay da hierarquia.
+- [x] Importação SMD com skeleton real validada em teste de regressão.
+- [x] Documentação em docs/RIGGING.md.
 
-## Critério
+## Critério atingido
 
-Abrir personagem rigado, editar hierarquia de forma controlada e visualizar.
+Um asset rigado pode ser importado, inspecionado, selecionado e editado de forma controlada, com bind/local/world transforms e visualização da hierarquia no viewer. A API permanece independente de SDL/OpenGL/Assimp.
+
+## Testes
+
+A suíte CI final da fase executou:
+- foundation: PASS
+- animation: PASS
+- rigging: PASS
+- viewer: PASS
+- importer: PASS
+- self-test gráfico: PASS
+- Build completo: PASS
+
+O teste de rigging cobre criação, renomeação, reparent, prevenção de ciclos, transforms, edição/reset de pose, groups, pivots, bloqueio de edição, seleção, roots/children, mirror e remoção controlada.
+
+O teste de importer cobre um SMD rigado com dois bones e valida a hierarquia importada.
+
+## Limites intencionais
+
+Anatomical markers permanecem na Fase 5. Auto-rigging permanece na Fase 7. Skinning/deformation permanece na Fase 8. Esses recursos não foram simulados para antecipar fases futuras.
 
 ---
 
